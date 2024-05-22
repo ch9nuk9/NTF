@@ -23,8 +23,8 @@ This repository contains Python-based tools for processing nematode tracking dat
 
 1. **Create a New Conda Environment**:
     ```bash
-    conda create -n tracking_env python=3.9
-    conda activate tracking_env
+    conda create -n NTF python=3.9
+    conda activate NTF
     ```
 
 2. **Install Dependencies**:
@@ -34,23 +34,23 @@ This repository contains Python-based tools for processing nematode tracking dat
 
 3. **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/nematode-tracking-filter.git
-    cd nematode-tracking-filter
+    git clone https://github.com/ch9nuk9/NTF.git
+    cd (path/to/repo)
     ```
 
 ### Running the Enhanced Script
 
 1. **Activate the Environment**:
     ```bash
-    conda activate tracking_env
+    conda activate NTF
     ```
 
 2. **Run the Script**:
     ```bash
-    python tracking_script.py
+    python NTF_script.py
     ```
 
-## Creating a Standalone Executable
+## Creating a Standalone Executable (Only if necessary)
 
 1. **Install PyInstaller**:
     ```bash
@@ -59,7 +59,7 @@ This repository contains Python-based tools for processing nematode tracking dat
 
 2. **Generate the Executable**:
     ```bash
-    pyinstaller --onefile tracking_script.py
+    pyinstaller --onefile NTF_script.py
     ```
 
 3. **Locate the Executable**:
@@ -84,11 +84,11 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
 
 ### Standalone Threshold Refining Script
 
-The standalone threshold refining script (`threshold_refining.py`) focuses solely on determining the optimal movement threshold using Gaussian KDE.
+The standalone threshold refining script (`Threshold_script.py`) focuses solely on determining the optimal movement threshold using Gaussian KDE.
 
 1. **Run the Standalone Script**:
     ```bash
-    python threshold_refining.py
+    python Threshold_script.py
     ```
 
 2. **Select Data File**:
