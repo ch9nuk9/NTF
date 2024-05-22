@@ -33,14 +33,14 @@ This repository contains Python-based tools for processing nematode tracking dat
 
 ### OR
 
-1. **Simply run the .yaml**:
+1. **Simply run the setup_environment.yaml**:
     ```bash
     conda env create -f setup_environment.yaml
     conda activate NTF
 
 ### OR
 
-1. **Simply run the .sh (Creates the conda environment NTF, activates and installs all the dependencies within the NTF)**:
+1. **Simply run the setup_environment.sh (Creates the conda environment NTF, activates and installs all the dependencies within the NTF)**:
     ```bash
     bash setup_environment.sh
 ###
