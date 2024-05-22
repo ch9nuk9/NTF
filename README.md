@@ -87,6 +87,22 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
 
 2. **Process Data**:
     - The script will process each subfolder's data, filter out predominantly stationary subjects, and save the filtered data to a new file.
+    
+      The find_optimal_threshold Function
+    - Kernel Density Estimation (KDE): The core idea is to estimate the probability density function (PDF) of the distances between consecutive frames.
+      KDE is a non-parametric way to smooth out the distribution of data points, creating a curve that represents how likely different distances are to occur.
+      In this code, it uses gaussian_kde from the SciPy library to perform KDE. This means it's assuming the underlying distribution of distances somewhat resembles a Gaussian (normal) distribution. density(xs) calculates the density values for a range of distances (xs).
+    - Finding the Threshold: The code aims to find a threshold distance that separates "stationary" frames from "moving" frames. It does this in one of two ways:
+    - Automatic: It finds the distance where the density drops to 5% of its maximum value. This is like saying, "Find the point where the likelihood of observing this distance or greater becomes quite low."
+      This low-density region is likely where stationary frames cluster. xs[np.argmax(density_values > density_values.max() * 0.05)] achieves this by finding the first point where the density exceeds the 5% threshold.
+    - Manual (Optional): The user can provide a manual threshold percentage through the GUI. np.percentile(distances, manual_threshold) calculates the corresponding distance value from the data's percentiles.
+      For example, a 5% manual threshold would find the distance value below which 5% of the data falls.
+    - Plotting: The function plots the density curve. This curve helps you visualize how distances are distributed. It also marks the calculated/manual threshold as a vertical line on the plot.
+      This gives a visual way to assess if the threshold seems reasonable given the data's distribution.
+
+      Why This Approach ?
+    - Adapts to Data: KDE doesn't assume a specific shape for the distribution of distances. It lets the data guide the shape of the curve. This is important because the distribution of distances in tracking data can vary depending on the experiment and behavior.
+    - Flexibility: The option for a manual threshold provides control if you have domain knowledge or specific requirements about what constitutes "stationary."
 
 3. **Save Filtered Data**:
     - Choose a location to save the filtered data file when prompted.
