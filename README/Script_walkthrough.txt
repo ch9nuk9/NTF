@@ -1,0 +1,160 @@
+Step-by-Step Explanation
+
+1. Starting the Application
+Main Window Creation:
+The script begins by creating a Tkinter main window with the title "Nematode Tracking Filter".
+A button labeled "Load Folder" is created and placed in the window. When clicked, it triggers the load_folder function.
+
+2. Loading the Main Folder
+Selecting the Main Folder:
+When the "Load Folder" button is clicked, a folder dialog opens allowing the user to select the main directory containing the subfolders with tracking data.
+The selected folder path is stored in the variable folder_path.
+
+3. Processing Each Subfolder
+Traversing Subfolders:
+The script lists all items in the selected folder and iterates over them.
+For each item, it checks if it's a directory (subfolder) using os.path.isdir(subfolder_path).
+
+4. Reading and Processing Data Files
+Identifying Data Files:
+>> Within each subfolder, the script looks for .txt files containing tracking data.
+>> The first .txt file found is selected for processing.
+
+Reading the Data:
+>> The selected .txt file is read into a pandas DataFrame with columns ['frame', 'time', 'X', 'Y'].
+>> A subject_id column is added to the DataFrame, using the subfolder name to uniquely identify each subject.
+
+Calculating Movement:
+>> Differences in X and Y positions between consecutive frames are calculated using the diff method, resulting in dX and dY columns.
+>> The Euclidean distance traveled between frames is calculated as distance = np.sqrt(dX**2 + dY**2).
+
+5. Determining Optimal Threshold
+Optimal Threshold Calculation:
+The find_optimal_threshold function is called with the calculated distances.
+Gaussian Kernel Density Estimation (KDE) is used to estimate the density distribution of distances.
+A threshold is determined where the density is 5% of the maximum density, indicating a cutoff for distinguishing between stationary and moving frames. The density plot with the threshold marked is displayed for visualization.
+
+6. Identifying Stationary Subjects
+Stationary Frames and Subjects:
+Frames with distances below the threshold are considered stationary.
+The ratio of stationary frames to total frames (stationary_ratio) is calculated.
+If the stationary_ratio exceeds 95%, the subject is considered predominantly stationary and skipped from further processing.
+
+7. Filtering and Saving Data
+Filtering Non-Stationary Frames:
+
+For non-stationary subjects, stationary frames are filtered out.
+The filtered data for each subject is appended to a list all_filtered_data.
+Combining and Saving Data:
+
+After processing all subfolders, the filtered data from all subjects is concatenated into a single DataFrame.
+A save dialog opens allowing the user to specify the location and name for the output file.
+The combined filtered data is saved to the specified file in a space-separated format.
+
+
+This script provides a comprehensive solution to process tracking data stored in multiple subfolders. By identifying and excluding predominantly stationary subjects, it ensures that the final output contains only relevant, moving subjects. The process includes reading data, calculating movement, determining an optimal threshold for stationary detection, filtering data, and saving the results.
+
+
+Script
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from scipy.stats import gaussian_kde
+
+def load_folder():
+    # Opens a folder dialog to select the main folder containing subfolders
+    folder_path = filedialog.askdirectory()
+    if folder_path:
+        process_folder(folder_path)
+
+def process_folder(folder_path):
+    # List to store filtered data for all subjects
+    all_filtered_data = []
+    
+    # Traverse each subfolder
+    for subfolder in os.listdir(folder_path):
+        subfolder_path = os.path.join(folder_path, subfolder)
+        
+        # Check if the subfolder path is indeed a directory
+        if os.path.isdir(subfolder_path):
+            # Find the .txt file in the subfolder
+            txt_files = [f for f in os.listdir(subfolder_path) if f.endswith('.txt')]
+            
+            if txt_files:
+                txt_file_path = os.path.join(subfolder_path, txt_files[0])
+                print(f"Processing file: {txt_file_path}")
+                
+                # Read and process the data file
+                data = pd.read_csv(txt_file_path, delim_whitespace=True, names=['frame', 'time', 'X', 'Y'])
+                data['subject_id'] = subfolder  # Add the subfolder name as the subject ID
+                
+                # Calculate differences and distances
+                data['dX'] = data['X'].diff().fillna(0)
+                data['dY'] = data['Y'].diff().fillna(0)
+                data['distance'] = np.sqrt(data['dX']**2 + data['dY']**2)
+                
+                # Find the optimal threshold to determine stationary frames
+                optimal_threshold = find_optimal_threshold(data)
+                print(f"Subject {subfolder} - Optimal Threshold: {optimal_threshold}")
+                
+                # Determine if the subject is predominantly stationary
+                stationary = data['distance'] < optimal_threshold
+                stationary_ratio = stationary.mean()
+                print(f"Subject {subfolder} - Stationary Ratio: {stationary_ratio:.2f}")
+                
+                # If the subject is predominantly stationary (e.g., more than 95% stationary), skip it
+                if stationary_ratio > 0.95:
+                    print(f"Subject {subfolder} is predominantly stationary. Skipping.")
+                    continue
+                
+                # Determine stationary frames based on the optimal threshold
+                stationary_frames = data.groupby('frame').apply(lambda group: (group['distance'] < optimal_threshold).all())
+                filtered_data = data[~data['frame'].isin(stationary_frames[stationary_frames].index)]
+                
+                # Append the filtered data for this subject to the list
+                all_filtered_data.append(filtered_data)
+    
+    # Concatenate all filtered data into a single DataFrame
+    combined_filtered_data = pd.concat(all_filtered_data)
+    
+    # Save the filtered data to a new file
+    save_path = filedialog.asksaveasfilename(defaultextension=".txt")
+    if save_path:
+        combined_filtered_data[['subject_id', 'frame', 'time', 'X', 'Y']].to_csv(save_path, sep=' ', index=False)
+        messagebox.showinfo("Success", "File has been saved successfully.")
+
+def find_optimal_threshold(data):
+    # Use Gaussian KDE to find the optimal threshold for distances
+    distances = data['distance'].values
+    density = gaussian_kde(distances)
+    xs = np.linspace(0, np.max(distances), 1000)
+    density_values = density(xs)
+    
+    # Determine the threshold where the density is 5% of the maximum density
+    threshold = xs[np.argmax(density_values > density_values.max() * 0.05)]
+    
+    # Plot the density and threshold
+    plt.figure(figsize=(10, 6))
+    plt.plot(xs, density_values, label='Density')
+    plt.axvline(threshold, color='r', linestyle='--', label=f'Optimal Threshold: {threshold:.2f}')
+    plt.xlabel('Distance')
+    plt.ylabel('Density')
+    plt.title('Optimal Threshold Determination')
+    plt.legend()
+    plt.show()
+    
+    return threshold
+
+# Create the main window
+root = tk.Tk()
+root.title("Nematode Tracking Filter")
+
+# Create a button to load the folder
+load_button = tk.Button(root, text="Load Folder", command=load_folder)
+load_button.pack(pady=20)
+
+# Run the application
+root.mainloop()

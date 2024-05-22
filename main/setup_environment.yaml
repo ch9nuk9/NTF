@@ -1,0 +1,12 @@
+name: NTF
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - matplotlib
+  - tk
+  - pip
+  - pip:
+    - scipy
