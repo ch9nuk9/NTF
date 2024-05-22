@@ -11,7 +11,7 @@ This repository contains Python-based tools for processing nematode tracking dat
 - Anaconda or Miniconda
 - Windows OS for .exe creation
 
-## Installation and Setup
+## Installation and Setup (Windows)
 ### Setting Up the Environment
 
 1. **Create a New Conda Environment**:
