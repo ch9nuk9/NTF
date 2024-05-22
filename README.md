@@ -1,11 +1,4 @@
 # NTF: Nematode Tracking Data Filter and Threshold Refining Tool
-This repository contains a Python-based tool for processing nematode tracking data, refining thresholds to distinguish between stationary and moving subjects, and creating a standalone executable (.exe) for easy distribution.
-
-# Features
-Data Filtering: Process tracking data to filter out predominantly stationary subjects.
-Threshold Refining: Utilize Gaussian Kernel Density Estimation (KDE) to determine optimal thresholds for movement.
-Standalone .exe Creation: Instructions and tools to package the Python script into a standalone executable for Windows.
-
 ## Overview
 This repository contains Python-based tools for processing nematode tracking data. It includes an enhanced script for filtering tracking data to remove stationary subjects, refining movement thresholds using Gaussian Kernel Density Estimation (KDE), and instructions for creating a standalone executable (.exe) for easy distribution.
 
@@ -38,6 +31,21 @@ This repository contains Python-based tools for processing nematode tracking dat
     cd (path/to/repo)
     ```
 
+### OR
+
+1. **Simply run the .yaml**:
+    ```bash
+    conda env create -f setup_environment.yaml
+    conda activate NTF
+
+### OR
+
+1. **Simply run the .sh (Creates the conda environment NTF, activates and installs all the dependencies within the NTF)**:
+    ```bash
+    bash setup_environment.sh
+###
+###
+###
 ### Running the Enhanced Script
 
 1. **Activate the Environment**:
