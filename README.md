@@ -91,7 +91,11 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
       The find_optimal_threshold Function
     - Kernel Density Estimation (KDE): The core idea is to estimate the probability density function (PDF) of the distances between consecutive frames.
       KDE is a non-parametric way to smooth out the distribution of data points, creating a curve that represents how likely different distances are to occur.
-      In this code, it uses gaussian_kde from the SciPy library to perform KDE. This means it's assuming the underlying distribution of distances somewhat resembles a Gaussian (normal) distribution. density(xs) calculates the density values for a range of distances (xs).
+      In this code, it uses gaussian_kde from the SciPy library to perform KDE. This means it's assuming the underlying distribution of distances somewhat resembles a Gaussian (normal) distribution.
+      density(xs) calculates the density values for a range of distances (xs). However, in very rare cases the data for a particular subject lies in a lower-dimensional subspace.
+      This leads to a singular covariance matrix which the gaussian_kde algorithm cannot handle. This usually happens when there isn't enough variability in the data.
+      In order to bypass situations like this a bypass script has been introduced where the data is pre-checked for variability. If there isn't enough variability, such sets will be skipped.
+      Alternatively, dimensionality of datasets will be reduced through PCA before using KDE. 
     - Finding the Threshold: The code aims to find a threshold distance that separates "stationary" frames from "moving" frames. It does this in one of two ways:
     - Automatic: It finds the distance where the density drops to 5% of its maximum value. This is like saying, "Find the point where the likelihood of observing this distance or greater becomes quite low."
       This low-density region is likely where stationary frames cluster. xs[np.argmax(density_values > density_values.max() * 0.05)] achieves this by finding the first point where the density exceeds the 5% threshold.
