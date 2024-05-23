@@ -22,7 +22,7 @@ def process_folder(folder_path):
                 txt_file_path = os.path.join(subfolder_path, txt_files[0])
                 print(f"Processing file: {txt_file_path}")
                 try:
-                    data = pd.read_csv(txt_file_path, sep='\s+', names=['frame', 'time', 'X', 'Y'])
+                    data = pd.read_csv(txt_file_path, sep='\\s+', names=['frame', 'time', 'X', 'Y'])
                 except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError) as e:
                     print(f"Error reading file {txt_file_path}: {e}")
                     continue
