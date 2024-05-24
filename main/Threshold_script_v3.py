@@ -50,7 +50,7 @@ class ThresholdRefinementApp:
     def load_directory(self):
         dir_path = filedialog.askdirectory()
         if dir_path:
-            self.folder_count = sum([len(files) for r, d, files in os.walk(dir_path)])
+            self.folder_count = sum([len(files) for r, d, files in os.walk(dir_path) if any(file.endswith(".txt") for file in files)])
             self.progress_bar['maximum'] = self.folder_count
             self.process_directory(dir_path)
     
@@ -86,7 +86,14 @@ class ThresholdRefinementApp:
         self.cancel_button.config(state=tk.DISABLED)
     
     def process_file(self, file_path):
-        data = pd.read_csv(file_path, delim_whitespace=True, names=['frame', 'time', 'X', 'Y'])
+        try:
+            data = pd.read_csv(file_path, sep=r'\s+', names=['frame', 'time', 'X', 'Y'])
+        except Exception as e:
+            raise ValueError(f"Error reading file {file_path}: {e}")
+        
+        if data.empty:
+            raise ValueError("File is empty or corrupted")
+        
         data['dX'] = data['X'].diff().fillna(0)
         data['dY'] = data['Y'].diff().fillna(0)
         data['distance'] = np.sqrt(data['dX']**2 + data['dY']**2)
@@ -97,20 +104,33 @@ class ThresholdRefinementApp:
     
     def find_optimal_threshold(self, data, file_path):
         distances = data['distance'].values
+        distances = distances[distances > 0]  # Exclude zero distances
+        
+        if len(distances) < 2:
+            raise ValueError("Not enough data points for KDE or PCA.")
+        
         try:
             density = gaussian_kde(distances)
             xs = np.linspace(0, np.max(distances), 1000)
             density_values = density(xs)
+            threshold = xs[np.argmax(density_values > density_values.max() * self.threshold_percentage)]
         except np.linalg.LinAlgError:
             pca = PCA(n_components=1)
             distances_reshaped = distances.reshape(-1, 1)
             pca.fit(distances_reshaped)
             xs = np.linspace(0, np.max(distances), 1000)
-            density_values = pca.components_[0]
-        
-        threshold = xs[np.argmax(density_values > density_values.max() * self.threshold_percentage)]
+            fp = pca.transform(distances_reshaped).flatten()
+            if len(fp) != len(xs):
+                fp = np.interp(xs, np.linspace(0, np.max(fp), len(fp)), fp)
+            density_values = fp
+            threshold = xs[np.argmax(density_values > density_values.max() * self.threshold_percentage)]
         
         # Plotting the density and threshold
+        self.plot_density(xs, density_values, threshold, file_path)
+        
+        return threshold
+    
+    def plot_density(self, xs, density_values, threshold, file_path):
         plt.figure(figsize=(10, 6))
         plt.plot(xs, density_values, label='Density')
         plt.axvline(threshold, color='r', linestyle='--', label=f'Optimal Threshold: {threshold:.2f}')
@@ -123,8 +143,6 @@ class ThresholdRefinementApp:
         plot_file = file_path.replace('.txt', '_threshold_plot.png')
         plt.savefig(plot_file)
         plt.close()
-        
-        return threshold
     
     def save_results(self, file_path, threshold):
         result_file = file_path.replace('.txt', '_threshold.txt')
