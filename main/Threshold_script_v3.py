@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 import json
-from threading import Thread
+from threading import Thread, Lock
 import time
 
 class ThresholdRefinementApp:
@@ -46,6 +46,7 @@ class ThresholdRefinementApp:
         self.is_paused = False
         self.is_canceled = False
         self.thread = None
+        self.lock = Lock()
 
     def load_directory(self):
         dir_path = filedialog.askdirectory()
@@ -69,6 +70,7 @@ class ThresholdRefinementApp:
                     while self.is_paused:
                         time.sleep(1)
                     if self.is_canceled:
+                        self.update_ui_on_cancel()
                         return
                     file_path = os.path.join(root, file)
                     try:
@@ -76,15 +78,13 @@ class ThresholdRefinementApp:
                     except Exception as e:
                         self.log_error(file_path, str(e))
                         messagebox.showerror("Error", f"Error processing file {file_path}: {str(e)}")
-                    self.folders_processed += 1
-                    self.progress_label.config(text=f"Progress: {self.folders_processed}/{self.folder_count}")
-                    self.progress_bar['value'] = self.folders_processed
+                    with self.lock:
+                        self.folders_processed += 1
+                        self.progress_label.config(text=f"Progress: {self.folders_processed}/{self.folder_count}")
+                        self.progress_bar['value'] = self.folders_processed
                     self.root.update_idletasks()
-        messagebox.showinfo("Info", "Processing complete!")
-        self.pause_button.config(state=tk.DISABLED)
-        self.resume_button.config(state=tk.DISABLED)
-        self.cancel_button.config(state=tk.DISABLED)
-    
+        self.update_ui_on_completion()
+
     def process_file(self, file_path):
         try:
             data = pd.read_csv(file_path, sep=r'\s+', names=['frame', 'time', 'X', 'Y'])
@@ -165,6 +165,19 @@ class ThresholdRefinementApp:
         self.resume_button.config(state=tk.DISABLED)
         self.cancel_button.config(state=tk.DISABLED)
     
+    def update_ui_on_cancel(self):
+        self.progress_label.config(text="Processing cancelled")
+        self.progress_bar['value'] = 0
+        self.pause_button.config(state=tk.DISABLED)
+        self.resume_button.config(state=tk.DISABLED)
+        self.cancel_button.config(state=tk.DISABLED)
+
+    def update_ui_on_completion(self):
+        messagebox.showinfo("Info", "Processing complete!")
+        self.pause_button.config(state=tk.DISABLED)
+        self.resume_button.config(state=tk.DISABLED)
+        self.cancel_button.config(state=tk.DISABLED)
+
     def log_error(self, file_path, error_message):
         log_file = "error_log.txt"
         with open(log_file, "a") as log:
@@ -185,9 +198,18 @@ class ThresholdRefinementApp:
         with open(self.config_file, 'w') as f:
             json.dump(config, f)
 
+    def on_closing(self):
+        if self.thread and self.thread.is_alive():
+            self.is_canceled = True
+            self.thread.join()
+        self.root.destroy()
+
 # Create the main window
 root = tk.Tk()
 app = ThresholdRefinementApp(root)
+
+# Handle window close event
+root.protocol("WM_DELETE_WINDOW", app.on_closing)
 
 # Run the application
 root.mainloop()
