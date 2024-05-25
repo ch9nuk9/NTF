@@ -1,177 +1,179 @@
 import os
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from scipy.stats import gaussian_kde
+from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN, SpectralClustering
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+from scipy.spatial.distance import euclidean
+import threading
+import tensorflow as tf
+from datetime import datetime
 
-def load_folder():
-    folder_path = filedialog.askdirectory()
-    if folder_path:
-        process_folder(folder_path)
+# Define global constants and variables
+output_directory = "output_directory"
 
-def process_folder(folder_path):
-    all_filtered_data = []
-    subfolders = [subfolder for subfolder in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, subfolder))]
-    total_subfolders = len(subfolders)
-    valid_subfolder_count = 0
-    skipped_subfolder_count = 0
-    skipped_folders = []
-    stationary_frames_record = []
+# Function to read data from a .txt file
+def read_data(file_path):
+    try:
+        data = pd.read_csv(file_path, delim_whitespace=True, header=None, names=['Frame', 'Time', 'X', 'Y'])
+        return data
+    except Exception as e:
+        log_error(f"Error reading file {file_path}: {e}")
+        return None
 
-    for idx, subfolder in enumerate(subfolders):
-        subfolder_path = os.path.join(folder_path, subfolder)
-        txt_files = [f for f in os.listdir(subfolder_path) if f.endswith('.txt')]
-        if txt_files:
-            txt_file_path = os.path.join(subfolder_path, txt_files[0])
-            print(f"Processing file: {txt_file_path}")
-            try:
-                data = pd.read_csv(txt_file_path, sep=',')
-            except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError) as e:
-                print(f"Error reading file {txt_file_path}: {e}")
-                skipped_subfolder_count += 1
-                skipped_folders.append(subfolder)
-                update_progress(idx, total_subfolders)
-                continue
+# Function to calculate parameters from tracking data
+def calculate_parameters(data):
+    data['Distance'] = data.apply(lambda row: euclidean((row['X'], row['Y']), (row['X'].shift(), row['Y'].shift())), axis=1)
+    data['Distance'] = data['Distance'].fillna(0)
+    data['TotalDistance'] = data['Distance'].cumsum()
+    data['Displacement'] = euclidean((data['X'].iloc[0], data['Y'].iloc[0]), (data['X'].iloc[-1], data['Y'].iloc[-1]))
+    data['Velocity_X'] = data['X'].diff() / data['Time'].diff()
+    data['Velocity_Y'] = data['Y'].diff() / data['Time'].diff()
+    data['Speed'] = np.sqrt(data['Velocity_X']**2 + data['Velocity_Y']**2)
+    data['TurnAngle'] = np.arctan2(data['Y'].diff(), data['X'].diff()).diff()
+    data['TurnAngle'] = data['TurnAngle'].fillna(0)
+    return data
 
-            data['subject_id'] = subfolder
-            data['dX'] = data['X'].diff().fillna(0)
-            data['dY'] = data['Y'].diff().fillna(0)
-            data['distance'] = np.sqrt(data['dX']**2 + data['dY']**2)
+# Function to normalize parameters
+def normalize_parameters(data):
+    scaler = StandardScaler()
+    data[['Distance', 'TotalDistance', 'Velocity_X', 'Velocity_Y', 'Speed', 'TurnAngle']] = scaler.fit_transform(
+        data[['Distance', 'TotalDistance', 'Velocity_X', 'Velocity_Y', 'Speed', 'TurnAngle']])
+    return data
 
-            if data['distance'].std() == 0:
-                print(f"Subject {subfolder} has no movement variability. Skipping.")
-                skipped_subfolder_count += 1
-                skipped_folders.append(subfolder)
-                update_progress(idx, total_subfolders)
-                continue
+# Function to compute summary statistics
+def compute_statistics(data):
+    statistics = {}
+    parameters = ['Distance', 'TotalDistance', 'Velocity_X', 'Velocity_Y', 'Speed', 'TurnAngle']
+    for param in parameters:
+        statistics[param] = {
+            'mean': data[param].mean(),
+            'median': data[param].median(),
+            'mode': data[param].mode()[0],
+            'max': data[param].max(),
+            'min': data[param].min(),
+            'range': data[param].max() - data[param].min(),
+            'std_dev': data[param].std(),
+            'variance': data[param].var(),
+            'skewness': data[param].skew(),
+            'kurtosis': data[param].kurt()
+        }
+    return statistics
 
-            try:
-                optimal_threshold = find_optimal_threshold(data)
-            except Exception as e:
-                print(f"Error finding optimal threshold for subject {subfolder}: {e}")
-                skipped_subfolder_count += 1
-                skipped_folders.append(subfolder)
-                update_progress(idx, total_subfolders)
-                continue
+# Function to save data and statistics to CSV
+def save_to_csv(data, statistics, output_path):
+    data.to_csv(os.path.join(output_path, 'Estimates.csv'), index=False)
+    stats_df = pd.DataFrame(statistics)
+    stats_df.to_csv(os.path.join(output_path, 'SummaryStatistics.csv'))
 
-            print(f"Subject {subfolder} - Optimal Threshold: {optimal_threshold}")
-            stationary = data['distance'] < optimal_threshold
-            stationary_ratio = stationary.mean()
-            print(f"Subject {subfolder} - Stationary Ratio: {stationary_ratio:.2f}")
-            
-            stationary_frames_record.append(stationary_ratio)
+# Function to perform clustering
+def perform_clustering(data, method='kmeans', n_clusters=3):
+    if method == 'kmeans':
+        model = KMeans(n_clusters=n_clusters)
+    elif method == 'hierarchical':
+        model = AgglomerativeClustering(n_clusters=n_clusters)
+    elif method == 'dbscan':
+        model = DBSCAN()
+    elif method == 'spectral':
+        model = SpectralClustering(n_clusters=n_clusters)
+    else:
+        raise ValueError("Invalid clustering method")
 
-            if stationary_ratio > 0.95:
-                print(f"Subject {subfolder} is predominantly stationary. Skipping.")
-                skipped_subfolder_count += 1
-                skipped_folders.append(subfolder)
-                update_progress(idx, total_subfolders)
-                continue
+    clusters = model.fit_predict(data)
+    silhouette_avg = silhouette_score(data, clusters)
+    return clusters, silhouette_avg
 
-            filtered_data = data[~stationary]
-            all_filtered_data.append(filtered_data)
-            valid_subfolder_count += 1
+# Function to log errors
+def log_error(message):
+    with open('error_log.txt', 'a') as f:
+        f.write(f"{datetime.now()} - {message}\n")
+
+# GUI Implementation
+class NematodeTrackingGUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Nematode Tracking Analysis")
+        self.geometry("600x400")
         
-        update_progress(idx, total_subfolders)
-
-    if all_filtered_data:
-        combined_filtered_data = pd.concat(all_filtered_data)
-        save_path = filedialog.asksaveasfilename(defaultextension=".txt")
-        if save_path:
-            try:
-                combined_filtered_data[['subject_id', 'frame', 'time', 'X', 'Y']].to_csv(save_path, sep=',', index=False)
-                messagebox.showinfo("Success", "File has been saved successfully.")
-            except Exception as e:
-                messagebox.showerror("Error", f"Failed to save the file: {e}")
-    else:
-        messagebox.showwarning("No Data", "No valid data to save.")
+        self.main_directory = tk.StringVar()
+        self.clustering_method = tk.StringVar(value='kmeans')
+        self.n_clusters = tk.IntVar(value=3)
+        
+        self.create_widgets()
     
-    progress_bar['value'] = 100
-    progress_label['text'] = 'Processing Complete'
-    valid_label['text'] = f'Valid Subfolders: {valid_subfolder_count}'
-    skipped_label['text'] = f'Skipped Subfolders: {skipped_subfolder_count}'
+    def create_widgets(self):
+        tk.Label(self, text="Main Directory:").pack(pady=10)
+        tk.Entry(self, textvariable=self.main_directory, width=50).pack(pady=5)
+        tk.Button(self, text="Browse", command=self.browse_directory).pack(pady=5)
+        
+        tk.Label(self, text="Clustering Method:").pack(pady=10)
+        tk.OptionMenu(self, self.clustering_method, 'kmeans', 'hierarchical', 'dbscan', 'spectral').pack(pady=5)
+        
+        tk.Label(self, text="Number of Clusters:").pack(pady=10)
+        tk.Entry(self, textvariable=self.n_clusters, width=5).pack(pady=5)
+        
+        self.progress_bar = ttk.Progressbar(self, orient="horizontal", mode="determinate", length=400)
+        self.progress_bar.pack(pady=20)
+        
+        tk.Button(self, text="Start Analysis", command=self.start_analysis).pack(pady=20)
+        
+    def browse_directory(self):
+        directory = filedialog.askdirectory()
+        if directory:
+            self.main_directory.set(directory)
     
-    visualize_stationary_vs_moving(stationary_frames_record)
+    def start_analysis(self):
+        threading.Thread(target=self.process_data).start()
+    
+    def process_data(self):
+        main_directory = self.main_directory.get()
+        if not main_directory:
+            messagebox.showerror("Error", "Please select a main directory.")
+            return
+        
+        output_path = os.path.join(main_directory, output_directory)
+        os.makedirs(output_path, exist_ok=True)
+        
+        all_data = []
+        subdirs = os.listdir(main_directory)
+        self.progress_bar["maximum"] = len(subdirs)
+        self.progress_bar["value"] = 0
+        
+        for subdir in subdirs:
+            subdir_path = os.path.join(main_directory, subdir)
+            if os.path.isdir(subdir_path):
+                for file in os.listdir(subdir_path):
+                    if file.endswith('.txt'):
+                        file_path = os.path.join(subdir_path, file)
+                        data = read_data(file_path)
+                        if data is not None:
+                            try:
+                                data = calculate_parameters(data)
+                                data = normalize_parameters(data)
+                                statistics = compute_statistics(data)
+                                save_to_csv(data, statistics, output_path)
+                                all_data.append(data)
+                            except Exception as e:
+                                log_error(f"Error processing file {file_path}: {e}")
+            self.progress_bar["value"] += 1
+            self.update_idletasks()
+        
+        aggregated_data = pd.concat(all_data)
+        aggregated_data.to_csv(os.path.join(output_path, 'Aggregated.csv'), index=False)
+        
+        clusters, silhouette_avg = perform_clustering(aggregated_data, method=self.clustering_method.get(), n_clusters=self.n_clusters.get())
+        aggregated_data['Cluster'] = clusters
+        aggregated_data.to_csv(os.path.join(output_path, 'ClusteredData.csv'), index=False)
+        
+        with open(os.path.join(output_path, 'ClusteringResults.txt'), 'w') as f:
+            f.write(f"Silhouette Score: {silhouette_avg}\n")
+        
+        messagebox.showinfo("Analysis Complete", "Data analysis and clustering completed successfully.")
 
-def update_progress(current, total):
-    progress = (current + 1) / total * 100
-    progress_bar['value'] = progress
-    progress_label['text'] = f'Processing {current + 1} of {total} subfolders'
-    root.update_idletasks()
-
-def find_optimal_threshold(data, manual_threshold=None):
-    distances = data['distance'].values
-    try:
-        density = gaussian_kde(distances)
-    except np.linalg.LinAlgError:
-        pca = PCA(n_components=1)
-        distances = pca.fit_transform(distances.reshape(-1, 1)).flatten()
-        density = gaussian_kde(distances)
-    xs = np.linspace(0, np.max(distances), 1000)
-    density_values = density(xs)
-    if manual_threshold is None:
-        threshold = xs[np.argmax(density_values > density_values.max() * 0.05)]
-    else:
-        threshold = np.percentile(distances, manual_threshold)
-    plt.figure(figsize=(10, 6))
-    plt.plot(xs, density_values, label='Density')
-    plt.axvline(threshold, color='r', linestyle='--', label=f'Optimal Threshold: {threshold:.2f}')
-    plt.xlabel('Distance')
-    plt.ylabel('Density')
-    plt.title('Optimal Threshold Determination')
-    plt.legend()
-    plt.show()
-    return threshold
-
-def set_manual_threshold():
-    try:
-        manual_threshold = float(manual_threshold_entry.get())
-        if 0 <= manual_threshold <= 100:
-            find_optimal_threshold(data=None, manual_threshold=manual_threshold)
-        else:
-            messagebox.showerror("Error", "Threshold percentage must be between 0 and 100.")
-    except ValueError:
-        messagebox.showerror("Error", "Invalid input. Please enter a numerical value.")
-
-def visualize_stationary_vs_moving(stationary_ratios):
-    plt.figure(figsize=(10, 6))
-    plt.hist(stationary_ratios, bins=20, alpha=0.7, label='Stationary Ratios')
-    plt.axvline(0.95, color='r', linestyle='--', label='Threshold for Skipping')
-    plt.xlabel('Stationary Ratio')
-    plt.ylabel('Count')
-    plt.title('Distribution of Stationary vs. Moving Elements')
-    plt.legend()
-    plt.show()
-
-root = tk.Tk()
-root.title("Nematode Tracking Filter")
-
-load_button = tk.Button(root, text="Load Folder", command=load_folder)
-load_button.pack(pady=10)
-
-manual_threshold_label = tk.Label(root, text="Manual Threshold Percentage:")
-manual_threshold_label.pack()
-manual_threshold_entry = ttk.Entry(root)
-manual_threshold_entry.pack()
-manual_threshold_entry.insert(0, "5")
-manual_threshold_button = tk.Button(root, text="Set Manual Threshold", command=set_manual_threshold)
-manual_threshold_button.pack()
-
-progress_frame = tk.Frame(root)
-progress_frame.pack(pady=10)
-progress_label = tk.Label(progress_frame, text="")
-progress_label.pack()
-progress_bar = ttk.Progressbar(progress_frame, orient="horizontal", length=250, mode="determinate")
-progress_bar.pack()
-
-count_frame = tk.Frame(root)
-count_frame.pack(pady=10)
-valid_label = tk.Label(count_frame, text="Valid Subfolders: 0")
-valid_label.pack()
-skipped_label = tk.Label(count_frame, text="Skipped Subfolders: 0")
-skipped_label.pack()
-
-root.mainloop()
+if __name__ == "__main__":
+    app = NematodeTrackingGUI()
+    app.mainloop()
