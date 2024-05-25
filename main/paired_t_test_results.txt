@@ -1,1 +1,0 @@
-Paired t-test: t-statistic = nan, p-value = nan
