@@ -49,11 +49,22 @@ def compute_statistics(data):
 
 def read_data_from_folder(folder_path):
     data_files = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
+    logging.info(f"Found {len(data_files)} .txt files in {folder_path}")
     data_list = []
     for file in data_files:
         file_path = os.path.join(folder_path, file)
-        data = pd.read_csv(file_path, delim_whitespace=True, names=['Frame', 'Time', 'X', 'Y'])
-        data_list.append(data)
+        try:
+            data = pd.read_csv(file_path, sep='\s+', names=['Frame', 'Time', 'X', 'Y'])
+            # Convert columns to numeric, coerce errors to NaN
+            data['Frame'] = pd.to_numeric(data['Frame'], errors='coerce')
+            data['Time'] = pd.to_numeric(data['Time'], errors='coerce')
+            data['X'] = pd.to_numeric(data['X'], errors='coerce')
+            data['Y'] = pd.to_numeric(data['Y'], errors='coerce')
+            data.dropna(inplace=True)  # Drop rows with NaN values
+            data_list.append(data)
+            logging.info(f"Successfully read {file_path}")
+        except Exception as e:
+            logging.error(f"Error reading {file_path}: {e}")
     return data_list
 
 class NematodeTrackerApp:
@@ -83,6 +94,7 @@ class NematodeTrackerApp:
     def select_directory(self):
         self.directory = filedialog.askdirectory()
         self.log.insert(tk.END, f"Selected directory: {self.directory}\n")
+        logging.info(f"Selected directory: {self.directory}")
 
     def process_data(self):
         self.log.insert(tk.END, "Processing data...\n")
@@ -98,7 +110,13 @@ class NematodeTrackerApp:
             aggregated_data = []
 
             for subfolder in subfolders:
+                self.log.insert(tk.END, f"Processing subfolder: {subfolder}\n")
+                logging.info(f"Processing subfolder: {subfolder}")
                 data_list = read_data_from_folder(subfolder)
+                if not data_list:
+                    self.log.insert(tk.END, f"No .txt files found in {subfolder}\n")
+                    logging.info(f"No .txt files found in {subfolder}")
+                    continue
                 for data in data_list:
                     data = calculate_parameters(data)
                     normalized_data = normalize_data(data)
@@ -111,11 +129,17 @@ class NematodeTrackerApp:
                 self.progress['value'] = (processed_folders / total_folders) * 100
                 self.root.update_idletasks()
 
-            aggregated_df = pd.concat(aggregated_data)
-            aggregated_file = os.path.join(self.directory, 'Aggregated.csv')
-            aggregated_df.to_csv(aggregated_file, index=False)
-
-            self.log.insert(tk.END, "Data processing completed.\n")
+            if aggregated_data:
+                aggregated_df = pd.concat(aggregated_data)
+                aggregated_file = os.path.join(self.directory, 'Aggregated.csv')
+                aggregated_df.to_csv(aggregated_file, index=False)
+                results_file = os.path.join(self.directory, 'Results.csv')
+                aggregated_df.to_csv(results_file, index=False)
+                self.log.insert(tk.END, "Data processing completed.\n")
+                logging.info("Data processing completed.")
+            else:
+                self.log.insert(tk.END, "No data processed. Check if the directory contains valid .txt files.\n")
+                logging.info("No data processed. Check if the directory contains valid .txt files.")
         except Exception as e:
             logging.error("Error in processing data", exc_info=True)
             self.log.insert(tk.END, f"Error: {e}\n")
