@@ -156,10 +156,17 @@ def process_folder(folder_path):
 
     if all_filtered_data_kde:
         combined_filtered_data_kde = pd.concat(all_filtered_data_kde)
-        save_filtered_data(combined_filtered_data_kde, filtered_dir_kde, "KDE")
-
+    else:
+        combined_filtered_data_kde = pd.DataFrame()
+    
     if all_filtered_data_lme:
         combined_filtered_data_lme = pd.concat(all_filtered_data_lme)
+    else:
+        combined_filtered_data_lme = pd.DataFrame()
+
+    if not combined_filtered_data_kde.empty:
+        save_filtered_data(combined_filtered_data_kde, filtered_dir_kde, "KDE")
+    if not combined_filtered_data_lme.empty:
         save_filtered_data(combined_filtered_data_lme, filtered_dir_lme, "LME")
 
     save_indexed_elements(stationary_elements_kde, os.path.join(filtered_dir_kde, 'stationary_elements.txt'))
@@ -172,16 +179,16 @@ def process_folder(folder_path):
     valid_label['text'] = f'Valid Subfolders: {valid_subfolder_count}'
     skipped_label['text'] = f'Skipped Subfolders: {skipped_subfolder_count}'
 
-    visualize_stationary_vs_moving(stationary_frames_record, plots_dir)
-    kde_metrics, lme_metrics = cross_validate(pd.concat([combined_filtered_data_kde, combined_filtered_data_lme]))
-    plot_performance_comparison(kde_metrics, lme_metrics, plots_dir)
-    perform_statistical_tests(kde_metrics, lme_metrics, stats_dir)
-
-    subject_ids = combined_filtered_data_kde['subject_id'].unique()
-    similarities, filtered_subjects = compare_pdfs(combined_filtered_data_kde, subject_ids)
-
-    save_pdf_comparison_results(similarities, filtered_subjects, stats_dir)
-    plot_pdf_comparison(combined_filtered_data_kde, subject_ids, plots_dir)
+    if not combined_filtered_data_kde.empty and not combined_filtered_data_lme.empty:
+        kde_metrics, lme_metrics = cross_validate(pd.concat([combined_filtered_data_kde, combined_filtered_data_lme]))
+        plot_performance_comparison(kde_metrics, lme_metrics, plots_dir)
+        perform_statistical_tests(kde_metrics, lme_metrics, stats_dir)
+    
+        subject_ids = combined_filtered_data_kde['subject_id'].unique()
+        similarities, filtered_subjects = compare_pdfs(combined_filtered_data_kde, subject_ids)
+    
+        save_pdf_comparison_results(similarities, filtered_subjects, stats_dir)
+        plot_pdf_comparison(combined_filtered_data_kde, subject_ids, plots_dir)
 
 def update_progress(current, total):
     progress = (current + 1) / total * 100
@@ -212,16 +219,17 @@ def find_optimal_threshold(data, manual_threshold=None):
     kurt = kurtosis(distances)
     skw = skew(distances)
     
-    plt.figure(figsize=(10, 6))
-    plt.plot(xs, density_values, label='Density')
-    plt.axvline(threshold, color='r', linestyle='--', label=f'Optimal Threshold: {threshold:.2f}')
-    plt.xlabel('Distance')
-    plt.ylabel('Density')
-    plt.title('Optimal Threshold Determination')
-    plt.legend()
-    plt.text(0.95, 0.95, f'Kurtosis: {kurt:.2f}\nSkewness: {skw:.2f}', 
-             transform=plt.gca().transAxes, verticalalignment='top', horizontalalignment='right')
-    plt.show()
+    if threading.current_thread() is threading.main_thread():
+        plt.figure(figsize=(10, 6))
+        plt.plot(xs, density_values, label='Density')
+        plt.axvline(threshold, color='r', linestyle='--', label=f'Optimal Threshold: {threshold:.2f}')
+        plt.xlabel('Distance')
+        plt.ylabel('Density')
+        plt.title('Optimal Threshold Determination')
+        plt.legend()
+        plt.text(0.95, 0.95, f'Kurtosis: {kurt:.2f}\nSkewness: {skw:.2f}', 
+                 transform=plt.gca().transAxes, verticalalignment='top', horizontalalignment='right')
+        plt.show()
     
     return threshold, kurt, skw
 
