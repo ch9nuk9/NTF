@@ -298,9 +298,9 @@ def calculate_metrics(true_labels, predicted_labels):
         tpr = tp / (tp + fn)
         fpr = fp / (fp + tn)
         accuracy = accuracy_score(true_labels, predicted_labels)
-        precision = precision_score(true_labels, predicted_labels)
-        recall = recall_score(true_labels, predicted_labels)
-        f1 = f1_score(true_labels, predicted_labels)
+        precision = precision_score(true_labels, predicted_labels, zero_division=0)
+        recall = recall_score(true_labels, predicted_labels, zero_division=0)
+        f1 = f1_score(true_labels, predicted_labels, zero_division=0)
         return tpr, fpr, accuracy, precision, recall, f1
     except Exception as e:
         raise ValueError(f"Error calculating metrics: {e}")
@@ -314,11 +314,11 @@ def cross_validate(data, k=5):
             train_data, test_data = data.iloc[train_index], data.iloc[test_index]
 
             kde_threshold, _, _ = find_optimal_threshold(train_data)
-            test_data["kde_pred"] = test_data["distance"] < kde_threshold
+            test_data.loc[:, "kde_pred"] = test_data["distance"] < kde_threshold
             kde_metrics.append(calculate_metrics(test_data["true_label"], test_data["kde_pred"]))
 
             lme_threshold, _ = calculate_lme_threshold(train_data)
-            test_data["lme_pred"] = test_data["distance"] < lme_threshold
+            test_data.loc[:, "lme_pred"] = test_data["distance"] < lme_threshold
             lme_metrics.append(calculate_metrics(test_data["true_label"], test_data["lme_pred"]))
 
         return kde_metrics, lme_metrics
@@ -330,26 +330,29 @@ def perform_statistical_tests(kde_metrics, lme_metrics, stats_dir):
         kde_acc = [m[2] for m in kde_metrics]
         lme_acc = [m[2] for m in lme_metrics]
 
-        t_stat, p_value = ttest_rel(kde_acc, lme_acc)
-        print(f"Paired t-test: t-statistic = {t_stat}, p-value = {p_value}")
+        if kde_acc and lme_acc:
+            t_stat, p_value = ttest_rel(kde_acc, lme_acc)
+            print(f"Paired t-test: t-statistic = {t_stat}, p-value = {p_value}")
 
-        with open(os.path.join(stats_dir, 'paired_t_test_results.txt'), 'w') as f:
-            f.write(f"Paired t-test: t-statistic = {t_stat}, p-value = {p_value}\n")
+            with open(os.path.join(stats_dir, 'paired_t_test_results.txt'), 'w') as f:
+                f.write(f"Paired t-test: t-statistic = {t_stat}, p-value = {p_value}\n")
 
-        kde_preds = np.concatenate([m[1] for m in kde_metrics])
-        lme_preds = np.concatenate([m[1] for m in lme_metrics])
-        true_labels = np.concatenate([m[0] for m in kde_metrics])
+            kde_preds = np.concatenate([m[1] for m in kde_metrics])
+            lme_preds = np.concatenate([m[1] for m in lme_metrics])
+            true_labels = np.concatenate([m[0] for m in kde_metrics])
 
-        contingency_table = [[sum((kde_preds == true_labels) & (lme_preds == true_labels)),
-                              sum((kde_preds == true_labels) & (lme_preds != true_labels))],
-                             [sum((kde_preds != true_labels) & (lme_preds == true_labels)),
-                              sum((kde_preds != true_labels) & (lme_preds != true_labels))]]
+            contingency_table = [[sum((kde_preds == true_labels) & (lme_preds == true_labels)),
+                                sum((kde_preds == true_labels) & (lme_preds != true_labels))],
+                                [sum((kde_preds != true_labels) & (lme_preds == true_labels)),
+                                sum((kde_preds != true_labels) & (lme_preds != true_labels))]]
 
-        mcnemar_result = mcnemar(contingency_table)
-        print(f"McNemar's test: statistic = {mcnemar_result.statistic}, p-value = {mcnemar_result.pvalue}")
+            mcnemar_result = mcnemar(contingency_table)
+            print(f"McNemar's test: statistic = {mcnemar_result.statistic}, p-value = {mcnemar_result.pvalue}")
 
-        with open(os.path.join(stats_dir, 'mcnemar_test_results.txt'), 'w') as f:
-            f.write(f"McNemar's test: statistic = {mcnemar_result.statistic}, p-value = {mcnemar_result.pvalue}\n")
+            with open(os.path.join(stats_dir, 'mcnemar_test_results.txt'), 'w') as f:
+                f.write(f"McNemar's test: statistic = {mcnemar_result.statistic}, p-value = {mcnemar_result.pvalue}\n")
+        else:
+            raise ValueError("Need at least one array to concatenate for statistical tests.")
     except Exception as e:
         raise ValueError(f"Error performing statistical tests: {e}")
 
@@ -403,7 +406,7 @@ def plot_pdf_comparison(data, subject_ids, plots_dir):
     try:
         plt.figure(figsize=(12, 6))
         for subject_id in subject_ids:
-            subject_data = data[data['subject_id'] == subject_id]
+            subject_data = data.loc[data['subject_id'] == subject_id]
             distances = subject_data['distance'].values
             density = gaussian_kde(distances)
             xs = np.linspace(0, np.max(distances), 1000)
@@ -433,8 +436,8 @@ def compare_pdfs(data, subject_ids, threshold=0.1):
             for j, subject_id2 in enumerate(subject_ids):
                 if i >= j:
                     continue
-                data1 = data[data['subject_id'] == subject_id1]['distance'].values
-                data2 = data[data['subject_id'] == subject_id2]['distance'].values
+                data1 = data.loc[data['subject_id'] == subject_id1]['distance'].values
+                data2 = data.loc[data['subject_id'] == subject_id2]['distance'].values
 
                 density1 = gaussian_kde(data1)(np.linspace(0, np.max(data1), 1000))
                 density2 = gaussian_kde(data2)(np.linspace(0, np.max(data2), 1000))
@@ -520,7 +523,7 @@ statistics_button.pack(pady=10)
 plot_comparison_button = tk.Button(tab3, text="Plot Performance Comparison", command=lambda: plot_performance_comparison([], [], ""))
 plot_comparison_button.pack(pady=10)
 
-plot_pdf_button = tk.Button(tab3, text="Plot PDF Comparison", command=lambda: plot_pdf_comparison(pd.DataFrame(), ['subject1', 'subject2'], ""))
+plot_pdf_button = tk.Button(tab3, text="Plot PDF Comparison", command=lambda: plot_pdf_comparison(pd.DataFrame(columns=['subject_id', 'distance']), ['subject1', 'subject2'], ""))
 plot_pdf_button.pack(pady=10)
 
 root.mainloop()
