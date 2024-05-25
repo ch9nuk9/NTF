@@ -78,6 +78,10 @@ def process_folder(folder_path):
             print(f"Processing file: {txt_file_path}")
             try:
                 data = pd.read_csv(txt_file_path, sep=r'\s+', names=['frame', 'time', 'X', 'Y'])
+                data['X'] = pd.to_numeric(data['X'], errors='coerce')
+                data['Y'] = pd.to_numeric(data['Y'], errors='coerce')
+                data['time'] = pd.to_numeric(data['time'], errors='coerce')
+                data.dropna(subset=['X', 'Y', 'time'], inplace=True)
             except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError) as e:
                 print(f"Error reading file {txt_file_path}: {e}")
                 skipped_subfolder_count += 1
@@ -200,10 +204,8 @@ def find_optimal_threshold(data, manual_threshold=None):
     distances = data['distance'].values
     
     try:
-        # Try KDE on original distances
         density = gaussian_kde(distances)
     except np.linalg.LinAlgError:
-        # If KDE fails, use PCA to reduce dimensionality
         pca = PCA(n_components=1)
         distances = pca.fit_transform(distances.reshape(-1, 1)).flatten()
         density = gaussian_kde(distances)
@@ -238,7 +240,7 @@ def calculate_lme_threshold(data):
         model = MixedLM.from_formula("distance ~ 1", groups=data["subject_id"], data=data)
         result = model.fit()
         fixed_intercept = result.params["Intercept"]
-        random_intercept_std = np.std(result.random_effects.values())
+        random_intercept_std = np.std(list(result.random_effects.values()))
         return fixed_intercept, random_intercept_std
     except Exception as e:
         raise ValueError(f"Error in LME threshold calculation: {e}")
@@ -511,14 +513,14 @@ skipped_label = tk.Label(count_frame, text="Skipped Subfolders: 0")
 skipped_label.pack()
 
 # Statistics Tab
-statistics_button = tk.Button(tab2, text="Calculate Statistics", command=lambda: perform_statistical_tests(kde_metrics, lme_metrics, stats_dir))
+statistics_button = tk.Button(tab2, text="Calculate Statistics", command=lambda: perform_statistical_tests([], [], ""))
 statistics_button.pack(pady=10)
 
 # Visualization Tab
-plot_comparison_button = tk.Button(tab3, text="Plot Performance Comparison", command=lambda: plot_performance_comparison(kde_metrics, lme_metrics, plots_dir))
+plot_comparison_button = tk.Button(tab3, text="Plot Performance Comparison", command=lambda: plot_performance_comparison([], [], ""))
 plot_comparison_button.pack(pady=10)
 
-plot_pdf_button = tk.Button(tab3, text="Plot PDF Comparison", command=lambda: plot_pdf_comparison(data, ['subject1', 'subject2'], plots_dir))
+plot_pdf_button = tk.Button(tab3, text="Plot PDF Comparison", command=lambda: plot_pdf_comparison(pd.DataFrame(), ['subject1', 'subject2'], ""))
 plot_pdf_button.pack(pady=10)
 
 root.mainloop()
