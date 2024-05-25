@@ -1,20 +1,23 @@
-import os
-import numpy as np
-import pandas as pd
-import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN, SpectralClustering
-from sklearn.metrics import silhouette_score
-import matplotlib.pyplot as plt
-from scipy.spatial.distance import euclidean
-import threading
-import tensorflow as tf
-from datetime import datetime
+import os  # To interact with the operating system, e.g., for directory traversal
+import numpy as np  # For numerical operations on arrays
+import pandas as pd  # For data manipulation and analysis
+import tkinter as tk  # For creating the graphical user interface (GUI)
+from tkinter import filedialog, messagebox, ttk  # For file dialogs, message boxes, and themed widgets in Tkinter
+from sklearn.preprocessing import StandardScaler  # For normalizing data
+from sklearn.decomposition import PCA  # For principal component analysis
+from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN, SpectralClustering  # For clustering algorithms
+from sklearn.metrics import silhouette_score  # For evaluating clustering performance
+import matplotlib.pyplot as plt  # For plotting data
+from scipy.spatial.distance import euclidean  # For calculating Euclidean distance between points
+import threading  # For running tasks in separate threads
+import tensorflow as tf  # For GPU acceleration and tensor computations
+from datetime import datetime  # For timestamping logs
 
 # Define global constants and variables
 output_directory = "output_directory"
+stationary_directory = "output_directory/Stationary"
+nonstationary_directory = "output_directory/Nonstationary"
+DISTANCE_THRESHOLD = 5  # Threshold for total distance to classify as artifact
 
 # Function to read data from a .txt file
 def read_data(file_path):
@@ -53,7 +56,7 @@ def compute_statistics(data):
         statistics[param] = {
             'mean': data[param].mean(),
             'median': data[param].median(),
-            'mode': data[param].mode()[0],
+            'mode': data[param].mode()[0] if not data[param].mode().empty else np.nan,
             'max': data[param].max(),
             'min': data[param].min(),
             'range': data[param].max() - data[param].min(),
@@ -91,6 +94,24 @@ def perform_clustering(data, method='kmeans', n_clusters=3):
 def log_error(message):
     with open('error_log.txt', 'a') as f:
         f.write(f"{datetime.now()} - {message}\n")
+
+# Function to check if the data represents a stationary artifact
+def is_stationary(data):
+    total_distance = data['TotalDistance'].iloc[-1]
+    x_variance = data['X'].var()
+    y_variance = data['Y'].var()
+    avg_speed = data['Speed'].mean()
+    
+    if total_distance < DISTANCE_THRESHOLD and x_variance < 1e-5 and y_variance < 1e-5 and avg_speed < 1e-3:
+        return True
+    return False
+
+# Function to save a copy of the dataset to the respective folder
+def save_dataset_copy(data, subdir, filename, output_folder):
+    output_subdir = os.path.join(output_folder, subdir)
+    os.makedirs(output_subdir, exist_ok=True)
+    output_file_path = os.path.join(output_subdir, filename)
+    data.to_csv(output_file_path, index=False)
 
 # GUI Implementation
 class NematodeTrackingGUI(tk.Tk):
@@ -135,8 +156,8 @@ class NematodeTrackingGUI(tk.Tk):
             messagebox.showerror("Error", "Please select a main directory.")
             return
         
-        output_path = os.path.join(main_directory, output_directory)
-        os.makedirs(output_path, exist_ok=True)
+        os.makedirs(stationary_directory, exist_ok=True)
+        os.makedirs(nonstationary_directory, exist_ok=True)
         
         all_data = []
         subdirs = os.listdir(main_directory)
@@ -153,26 +174,35 @@ class NematodeTrackingGUI(tk.Tk):
                         if data is not None:
                             try:
                                 data = calculate_parameters(data)
+                                if is_stationary(data):
+                                    log_error(f"Stationary artifact detected in file {file_path}")
+                                    save_dataset_copy(data, subdir, file, stationary_directory)
+                                    continue
+                                else:
+                                    save_dataset_copy(data, subdir, file, nonstationary_directory)
                                 data = normalize_parameters(data)
                                 statistics = compute_statistics(data)
-                                save_to_csv(data, statistics, output_path)
+                                save_to_csv(data, statistics, nonstationary_directory)
                                 all_data.append(data)
                             except Exception as e:
                                 log_error(f"Error processing file {file_path}: {e}")
             self.progress_bar["value"] += 1
             self.update_idletasks()
         
-        aggregated_data = pd.concat(all_data)
-        aggregated_data.to_csv(os.path.join(output_path, 'Aggregated.csv'), index=False)
-        
-        clusters, silhouette_avg = perform_clustering(aggregated_data, method=self.clustering_method.get(), n_clusters=self.n_clusters.get())
-        aggregated_data['Cluster'] = clusters
-        aggregated_data.to_csv(os.path.join(output_path, 'ClusteredData.csv'), index=False)
-        
-        with open(os.path.join(output_path, 'ClusteringResults.txt'), 'w') as f:
-            f.write(f"Silhouette Score: {silhouette_avg}\n")
-        
-        messagebox.showinfo("Analysis Complete", "Data analysis and clustering completed successfully.")
+        if all_data:
+            aggregated_data = pd.concat(all_data)
+            aggregated_data.to_csv(os.path.join(nonstationary_directory, 'Aggregated.csv'), index=False)
+            
+            clusters, silhouette_avg = perform_clustering(aggregated_data, method=self.clustering_method.get(), n_clusters=self.n_clusters.get())
+            aggregated_data['Cluster'] = clusters
+            aggregated_data.to_csv(os.path.join(nonstationary_directory, 'ClusteredData.csv'), index=False)
+            
+            with open(os.path.join(nonstationary_directory, 'ClusteringResults.txt'), 'w') as f:
+                f.write(f"Silhouette Score: {silhouette_avg}\n")
+            
+            messagebox.showinfo("Analysis Complete", "Data analysis and clustering completed successfully.")
+        else:
+            messagebox.showinfo("No Valid Data", "No valid data found for analysis. All files were stationary artifacts.")
 
 if __name__ == "__main__":
     app = NematodeTrackingGUI()
