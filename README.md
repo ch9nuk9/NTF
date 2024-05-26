@@ -121,7 +121,8 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     ```bash
     python Data_generator_v1.0.py
     ```
-..........................................    
+
+        
 
 ## Usage
 ### Final Script
