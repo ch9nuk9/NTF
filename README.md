@@ -54,6 +54,8 @@ This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a
 6. **Use the GUI as needed**
      
 
+
+
 ### OR (Discouraged)
 
 1. **Simply run the setup_environment.yaml**:
@@ -66,25 +68,26 @@ This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a
 1. **Simply run the setup_environment.sh (Creates the conda environment NTF, activates and installs all the dependencies within the NTF)**:
     ```bash
     bash setup_environment.sh
-###
-###
-###
-### Running the Enhanced Script
+
+
+
+## Running the Script
 
 1. **Activate the Environment**:
     ```bash
     conda activate NTF
     ```
 
-2. **Run the Script**:
+2. **Change the Directory**:
+    ```bash
+    cd (path/to/repo)
+    ```
+
+3. **Run the Script**:
     ```bash
     python NTF_testbuild_v2.0_Final.py
     ```
     
-3. **Change the Directory**:
-    ```bash
-    cd (path/to/repo)
-    ```
     
 ## Creating a Standalone Executable (Only if necessary)
 
@@ -110,7 +113,9 @@ This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a
 
 To create an installer for the .exe file, you can use [Inno Setup](http://www.jrsoftware.org/isinfo.php). Follow the Inno Setup wizard to package your executable into an installer.
 
-### Mock Data Generator (Only for test purposes)
+
+
+## Mock Data Generator (Only for test purposes)
 
 1. **Navigate to the mock data generator directory**:
     ```bash
@@ -121,8 +126,7 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     ```bash
     python Data_generator_v1.0.py
     ```
-
-        
+       
 
 ## Usage
 ### Final Script
@@ -147,11 +151,13 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     import shutil
     ```
 
+
 2. **Logging Configuration**: Configures logging to capture error messages and log them to error.log.
     ```bash
     logging.basicConfig(filename='error.log', level=logging.ERROR, 
                     format='%(asctime)s:%(levelname)s:%(message)s')
     ```
+
     
 3. **Data Processing Functions**: Calculates various parameters such as distance, displacement, velocities, and angles from the X, Y coordinates and Time.
    calculate_parameters - Calculates various parameters such as distance, displacement, velocities, and angles from the X, Y coordinates and Time.
@@ -188,6 +194,7 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     # Reads all .txt files from the specified folder and returns a list of dataframes
     return data_list
     ```
+
    
 4. **Clustering Functions**:
    perform_clustering - Applies the specified clustering algorithm to the data.
@@ -202,6 +209,7 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     def plot_clusters(data, labels, output_dir):
     # Uses PCA to reduce data dimensions to 2D and then uses Plotly to plot clusters
     ```
+
    
 5. **Directory Management**:
    create_output_directories - Creates directories for storing logs, processed data, and clustering results.
@@ -210,6 +218,7 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     # Creates necessary output directories for storing logs, stationary and non-stationary data
     return output_dir, log_dir, stationary_dir, non_stationary_dir
     ```
+
    
 6. **GUI Implementation**:
    NematodeTrackerApp - Implements the main application window with options to select a directory, etc.
@@ -252,7 +261,8 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
         self.log.insert(tk.END, f"Error: {e}\n")
     ```
 
-6. **Main Function**:
+
+7. **Main Function**:
    The entry point of the script that initializes and runs the GUI application.
    ```bash
     def main():
@@ -260,6 +270,8 @@ To create an installer for the .exe file, you can use [Inno Setup](http://www.jr
     app = NematodeTrackerApp(root)
     root.mainloop()
     ```
+
+
 This script provides a full pipeline for processing and analyzing nematode movement data, from reading raw data files to generating statistical summaries and clustering results, all through an interactive GUI. It is designed to handle multiple datasets, normalize and compute necessary parameters, and visually present clustering results, making it a comprehensive tool for researchers working with such data.
 
 For detailed information on each function and its parameters, refer to the comments in the code.
