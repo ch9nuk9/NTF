@@ -1,0 +1,6 @@
+2024-05-26 13:19:26,137:ERROR:Error in processing data
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\Trial.py", line 283, in process_data_thread
+    kwargs['eps'] = float(self.eps_entry.get())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: could not convert string to float: ''

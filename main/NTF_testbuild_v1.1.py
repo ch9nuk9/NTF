@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use the Agg backend for non-GUI plotting
 import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.preprocessing import StandardScaler
@@ -110,6 +112,23 @@ def plot_clusters(data, labels, output_dir):
     plot_path = os.path.join(output_dir, 'cluster_visualization.html')
     fig.write_html(plot_path)
 
+def create_output_directories(base_dir, subfolder_paths):
+    output_dir = os.path.join(base_dir, "Output")
+    log_dir = os.path.join(output_dir, "logs")
+    stationary_dir = os.path.join(output_dir, "stationary")
+    non_stationary_dir = os.path.join(output_dir, "non_stationary")
+    os.makedirs(log_dir, exist_ok=True)
+    os.makedirs(stationary_dir, exist_ok=True)
+    os.makedirs(non_stationary_dir, exist_ok=True)
+
+    for subfolder in subfolder_paths:
+        relative_path = os.path.relpath(subfolder, base_dir)
+        os.makedirs(os.path.join(output_dir, relative_path), exist_ok=True)
+        os.makedirs(os.path.join(stationary_dir, relative_path), exist_ok=True)
+        os.makedirs(os.path.join(non_stationary_dir, relative_path), exist_ok=True)
+
+    return output_dir, log_dir, stationary_dir, non_stationary_dir
+
 class NematodeTrackerApp:
     def __init__(self, root):
         self.root = root
@@ -171,30 +190,48 @@ class NematodeTrackerApp:
 
     def process_data_thread(self):
         try:
-            output_dir = os.path.join(self.directory, "Output")
-            os.makedirs(output_dir, exist_ok=True)
             subfolders = [f.path for f in os.scandir(self.directory) if f.is_dir()]
+            output_dir, log_dir, stationary_dir, non_stationary_dir = create_output_directories(self.directory, subfolders)
+            
             total_folders = len(subfolders)
             processed_folders = 0
 
             aggregated_data = []
 
             for subfolder in subfolders:
+                relative_path = os.path.relpath(subfolder, self.directory)
+                output_subfolder = os.path.join(output_dir, relative_path)
+                stationary_subfolder = os.path.join(stationary_dir, relative_path)
+                non_stationary_subfolder = os.path.join(non_stationary_dir, relative_path)
+                
                 self.log.insert(tk.END, f"Processing subfolder: {subfolder}\n")
                 logging.info(f"Processing subfolder: {subfolder}")
+                
                 data_list = read_data_from_folder(subfolder)
                 if not data_list:
                     self.log.insert(tk.END, f"No .txt files found in {subfolder}\n")
                     logging.info(f"No .txt files found in {subfolder}")
                     continue
+                
                 for data in data_list:
                     data = calculate_parameters(data)
                     normalized_data = normalize_data(data)
                     stats = compute_statistics(normalized_data)
-                    generate_histograms(data, subfolder)
-                    estimates_file = os.path.join(subfolder, 'Estimates.csv')
+                    generate_histograms(data, output_subfolder)
+                    
+                    estimates_file = os.path.join(output_subfolder, 'Estimates.csv')
                     data.to_csv(estimates_file, index=False)
                     aggregated_data.append(stats)
+                    
+                    # Check if the data is stationary
+                    if (data['velocity_x'].std() < 1e-2) and (data['velocity_y'].std() < 1e-2):
+                        dest_subfolder = stationary_subfolder
+                    else:
+                        dest_subfolder = non_stationary_subfolder
+                    
+                    data_file_name = os.path.basename(estimates_file)
+                    os.makedirs(dest_subfolder, exist_ok=True)
+                    data.to_csv(os.path.join(dest_subfolder, data_file_name), index=False)
 
                 processed_folders += 1
                 self.progress['value'] = (processed_folders / total_folders) * 100
