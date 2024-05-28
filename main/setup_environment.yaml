@@ -2,11 +2,13 @@ name: NTF
 channels:
   - defaults
 dependencies:
-  - python=3.10
+  - python=3.9
   - pandas
   - numpy
   - matplotlib
-  - tk
+  - plotly
+  - scikit-learn
+  - tkinter
   - pip
   - pip:
     - scipy

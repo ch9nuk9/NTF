@@ -7,7 +7,7 @@ conda create -n NTF python=3.9 -y
 source activate NTF
 
 # Install dependencies
-conda install pandas numpy matplotlib scipy tk -y
+conda install pandas numpy plotly scikit-learn matplotlib loguru scipy tkinter -y
 
 echo "Environment setup complete. To activate the environment, use 'conda activate NTF'."
 
