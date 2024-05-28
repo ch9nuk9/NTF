@@ -3,13 +3,13 @@
 This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a comprehensive Python-based tool for analyzing and clustering nematode movement data. In addition, it includes a utility for creating mock test datasets, enabling users to generate synthetic data for testing and validation purposes.
 
 ## Key Features
-- **Data Processing: Reads raw data from text files, calculates movement parameters, and normalizes the data.
-- **Statistical Analysis: Computes basic statistical measures and generates histograms for each parameter.
-- **Clustering: Supports multiple clustering algorithms including KMeans, Hierarchical, DBSCAN, and Gaussian Mixture.
-- **Visualization: Provides 2D visualization of clustered data using PCA and Plotly.
-- **GUI Interface: Includes a user-friendly GUI for directory selection, clustering method configuration, and progress tracking.
-- **Error Logging: Logs errors and processing information to an error log file.
-- **Mock Data Generator: Generates synthetic nematode movement datasets for testing and validation.
+- Data Processing: Reads raw data from text files, calculates movement parameters, and normalizes the data.
+- Statistical Analysis: Computes basic statistical measures and generates histograms for each parameter.
+- Clustering: Supports multiple clustering algorithms including KMeans, Hierarchical, DBSCAN, and Gaussian Mixture.
+- Visualization: Provides 2D visualization of clustered data using PCA and Plotly.
+- GUI Interface: Includes a user-friendly GUI for directory selection, clustering method configuration, and progress tracking.
+- Error Logging: Logs errors and processing information to an error log file.
+- Mock Data Generator: Generates synthetic nematode movement datasets for testing and validation.
 
 ## Prerequisites
 - Python 3.x (Libraries: pandas, numpy, matplotlib, plotly, scikit-learn, tkinter, threading, logging, shutil)
