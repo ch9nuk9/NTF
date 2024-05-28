@@ -28,7 +28,7 @@ This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a
 
 2. **Install Dependencies**:
     ```bash
-    conda install pandas numpy matplotlib plotly scikit-learn tkinter threading logging shutil
+    conda install pandas numpy matplotlib plotly scikit-learn tkinter scipy
     ```
 
 3. **Clone the Repository**:
