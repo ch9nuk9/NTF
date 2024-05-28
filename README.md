@@ -56,14 +56,14 @@ This repository contains the Nematode Tracking Dataset Filteration Tool (NTF), a
 
 
 
-### OR (Discouraged)
+### OR
 
 1. **Simply run the setup_environment.yaml**:
     ```bash
     conda env create -f setup_environment.yaml
     conda activate NTF
 
-### OR (Discouraged)
+### OR (via shell script)
 
 1. **Simply run the setup_environment.sh (Creates the conda environment NTF, activates and installs all the dependencies within the NTF)**:
     ```bash
