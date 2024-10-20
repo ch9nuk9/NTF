@@ -56,7 +56,7 @@ A comprehensive tool for analyzing and filtering nematode movement tracks from S
 
 ## Introduction
 
-The **Nematode Tracks Filter (NTF)** is a Python-based graphical user interface (GUI) application designed to process, analyze, and classify movement tracks of nematodes (worms) captured through microscopy. The application facilitates the filtering of movement data, clustering of tracks based on movement characteristics, and classification of tracks to distinguish worms from artifacts or unknown entities.
+The **Nematode Tracks Filter (NTF)** is a Python-based graphical user interface (GUI) application designed to process, analyze, and classify movement tracks of nematodes (worms) captured through microscopy and later processed through the simple worm cropper (SWC). The application facilitates the filtering of movement data, clustering of tracks based on movement characteristics, and classification of tracks to distinguish worms from artifacts or unknown entities.
 
 ---
 
