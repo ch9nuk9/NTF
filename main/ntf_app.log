@@ -1,0 +1,1050 @@
+2024-09-27 15:41:09,678 - ERROR - Error in start_processing: Invalid output directory.
+2024-09-27 15:41:09,680 - ERROR - Error in start_processing: Invalid output directory.
+2024-09-27 15:41:22,507 - INFO - Starting processing...
+2024-09-27 15:41:22,508 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 15:41:22,509 - INFO - Calculating SD values...
+2024-09-27 15:41:22,649 - INFO - Missing file: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07\report\track_with_time.txt
+2024-09-27 15:41:22,670 - INFO - SD Summary saved.
+2024-09-27 15:41:22,671 - INFO - Running K-Means Clustering...
+2024-09-27 16:00:00,642 - INFO - Starting processing...
+2024-09-27 16:00:00,643 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:00:00,643 - INFO - Calculating SD values...
+2024-09-27 16:00:00,737 - INFO - SD Summary saved.
+2024-09-27 16:00:00,738 - INFO - Running K-Means Clustering...
+2024-09-27 16:00:00,876 - INFO - Clustering Results saved.
+2024-09-27 16:00:00,876 - INFO - Generating interactive plot...
+2024-09-27 16:00:01,343 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results.html
+2024-09-27 16:00:01,344 - INFO - Classifying files...
+2024-09-27 16:00:17,934 - INFO - File classification completed.
+2024-09-27 16:00:17,934 - INFO - Computing movement metrics...
+2024-09-27 16:00:18,006 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 16:00:18,007 - INFO - Processing completed.
+2024-09-27 16:03:34,451 - INFO - Starting processing...
+2024-09-27 16:03:34,451 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:03:34,452 - INFO - Calculating SD values...
+2024-09-27 16:03:34,547 - INFO - SD Summary saved.
+2024-09-27 16:03:34,547 - INFO - Running K-Means Clustering...
+2024-09-27 16:03:34,572 - INFO - Optimal number of clusters detected: 5
+2024-09-27 16:03:34,579 - INFO - Clustering Results saved.
+2024-09-27 16:03:34,582 - INFO - Generating interactive plot...
+2024-09-27 16:03:34,670 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results.html
+2024-09-27 16:03:34,670 - INFO - Classifying files...
+2024-09-27 16:03:52,349 - INFO - File classification completed.
+2024-09-27 16:03:52,350 - INFO - Computing movement metrics...
+2024-09-27 16:03:52,391 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 16:03:52,392 - INFO - Processing completed.
+2024-09-27 16:23:30,736 - INFO - Starting processing...
+2024-09-27 16:23:30,737 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:23:30,737 - INFO - Calculating SD values...
+2024-09-27 16:23:30,739 - ERROR - Error in process_directory: 'Worker' object has no attribute 'calculate_sd'
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 111, in process_directory
+    futures.append(executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders))
+                                   ^^^^^^^^^^^^^^^^^
+AttributeError: 'Worker' object has no attribute 'calculate_sd'
+2024-09-27 16:23:30,742 - ERROR - Error in process_data: 'Worker' object has no attribute 'calculate_sd'
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 70, in run
+    self.process_directory(parent_dir, self.output_dir, self.fps, idx)
+  File "D:\UWien\NTF\main\NTF.py", line 111, in process_directory
+    futures.append(executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders))
+                                   ^^^^^^^^^^^^^^^^^
+AttributeError: 'Worker' object has no attribute 'calculate_sd'
+2024-09-27 16:23:30,744 - ERROR - Error in process_directory: 'Worker' object has no attribute 'calculate_sd'
+NoneType: None
+2024-09-27 16:23:30,777 - ERROR - Error in process_data: 'Worker' object has no attribute 'calculate_sd'
+NoneType: None
+2024-09-27 16:31:28,014 - INFO - Starting processing...
+2024-09-27 16:31:28,015 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:31:28,015 - INFO - Calculating SD values...
+2024-09-27 16:31:28,147 - INFO - SD Summary saved.
+2024-09-27 16:31:28,147 - INFO - Running SD Threshold Clustering...
+2024-09-27 16:31:28,147 - INFO - Calculating auto-threshold using first derivative...
+2024-09-27 16:31:28,148 - INFO - Auto Threshold Calculated: 10.1716
+2024-09-27 16:31:28,148 - INFO - Clustering Results saved.
+2024-09-27 16:31:28,148 - INFO - Generating interactive plot...
+2024-09-27 16:31:28,586 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results_20240927_163128.html
+2024-09-27 16:31:28,587 - INFO - Classifying files...
+2024-09-27 16:31:45,364 - INFO - File classification completed.
+2024-09-27 16:31:45,364 - INFO - Computing movement metrics...
+2024-09-27 16:31:45,513 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 16:31:45,513 - INFO - Processing completed.
+2024-09-27 16:33:15,399 - INFO - Starting processing...
+2024-09-27 16:33:15,399 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:33:15,401 - INFO - Calculating SD values...
+2024-09-27 16:33:15,531 - INFO - SD Summary saved.
+2024-09-27 16:33:15,531 - INFO - Running K-Means Clustering...
+2024-09-27 16:33:15,711 - INFO - Optimal number of clusters detected: 5
+2024-09-27 16:33:15,736 - INFO - Clustering Results saved.
+2024-09-27 16:33:15,741 - INFO - Generating interactive plot...
+2024-09-27 16:33:15,799 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results_20240927_163315.html
+2024-09-27 16:33:15,800 - INFO - Classifying files...
+2024-09-27 16:33:34,753 - INFO - File classification completed.
+2024-09-27 16:33:34,754 - INFO - Computing movement metrics...
+2024-09-27 16:33:34,772 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 16:33:34,773 - INFO - Processing completed.
+2024-09-27 16:52:50,210 - INFO - Starting processing...
+2024-09-27 16:52:50,210 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 16:52:50,211 - INFO - Calculating SD values...
+2024-09-27 16:52:50,343 - INFO - SD Summary saved.
+2024-09-27 16:52:50,344 - INFO - Running SD Threshold Clustering...
+2024-09-27 16:52:50,344 - INFO - Calculating auto-threshold using first derivative...
+2024-09-27 16:52:50,344 - INFO - Auto Threshold Calculated: 10.1716
+2024-09-27 16:52:50,344 - INFO - Clustering Results saved.
+2024-09-27 16:52:50,345 - INFO - Generating interactive plot...
+2024-09-27 16:52:50,804 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results_20240927_165250.html
+2024-09-27 16:52:50,805 - INFO - Classifying files...
+2024-09-27 16:53:06,629 - INFO - File classification completed.
+2024-09-27 16:53:06,629 - INFO - Computing movement metrics...
+2024-09-27 16:53:06,760 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 16:53:06,761 - INFO - Processing completed.
+2024-09-27 17:29:40,551 - INFO - Starting processing...
+2024-09-27 17:29:40,552 - INFO - Processing directory 1/1: D:/NTF_TEST/Elpiniki_Test_25092024/2024-08-01_13-30-28_benzaldehyde_0.07
+2024-09-27 17:29:40,552 - INFO - Calculating SD values...
+2024-09-27 17:29:40,718 - INFO - SD Summary saved.
+2024-09-27 17:29:40,718 - INFO - Running SD Threshold Clustering...
+2024-09-27 17:29:40,718 - INFO - Calculating auto-threshold using first derivative...
+2024-09-27 17:29:40,718 - INFO - Auto Threshold Calculated: 10.1716
+2024-09-27 17:29:40,719 - INFO - Clustering Results saved.
+2024-09-27 17:29:40,719 - INFO - Generating interactive plot...
+2024-09-27 17:29:41,167 - INFO - Interactive plot saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Clustering_Results_20240927_172941.html
+2024-09-27 17:29:41,167 - INFO - Classifying files...
+2024-09-27 17:29:57,975 - INFO - File classification completed.
+2024-09-27 17:29:57,976 - INFO - Computing movement metrics...
+2024-09-27 17:29:58,101 - INFO - Movement metrics saved at D:/NTF_TEST/Elpiniki_Test_25092024/Output\Movement_Metrics.csv
+2024-09-27 17:29:58,102 - INFO - Processing completed.
+2024-10-01 14:35:45,373 - INFO - Starting processing...
+2024-10-01 14:35:45,375 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1
+2024-10-01 14:35:45,375 - INFO - Calculating SD values...
+2024-10-01 14:35:45,383 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_0\track_with_time.txt
+2024-10-01 14:35:45,384 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_1\track_with_time.txt
+2024-10-01 14:35:45,384 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_10\track_with_time.txt
+2024-10-01 14:35:45,385 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_11\track_with_time.txt
+2024-10-01 14:35:45,386 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_12\track_with_time.txt
+2024-10-01 14:35:45,386 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_13\track_with_time.txt
+2024-10-01 14:35:45,386 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_14\track_with_time.txt
+2024-10-01 14:35:45,387 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_15\track_with_time.txt
+2024-10-01 14:35:45,387 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_17\track_with_time.txt
+2024-10-01 14:35:45,388 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_18\track_with_time.txt
+2024-10-01 14:35:45,388 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_19\track_with_time.txt
+2024-10-01 14:35:45,389 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_16\track_with_time.txt
+2024-10-01 14:35:45,390 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_22\track_with_time.txt
+2024-10-01 14:35:45,391 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_21\track_with_time.txt
+2024-10-01 14:35:45,391 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_20\track_with_time.txt
+2024-10-01 14:35:45,391 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_2\track_with_time.txt
+2024-10-01 14:35:45,392 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_23\track_with_time.txt
+2024-10-01 14:35:45,392 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_25\track_with_time.txt
+2024-10-01 14:35:45,392 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_24\track_with_time.txt
+2024-10-01 14:35:45,393 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_26\track_with_time.txt
+2024-10-01 14:35:45,393 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_27\track_with_time.txt
+2024-10-01 14:35:45,393 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_29\track_with_time.txt
+2024-10-01 14:35:45,394 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_28\track_with_time.txt
+2024-10-01 14:35:45,394 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_3\track_with_time.txt
+2024-10-01 14:35:45,395 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_30\track_with_time.txt
+2024-10-01 14:35:45,395 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_31\track_with_time.txt
+2024-10-01 14:35:45,396 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_32\track_with_time.txt
+2024-10-01 14:35:45,397 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_33\track_with_time.txt
+2024-10-01 14:35:45,397 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_34\track_with_time.txt
+2024-10-01 14:35:45,398 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_35\track_with_time.txt
+2024-10-01 14:35:45,400 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_36\track_with_time.txt
+2024-10-01 14:35:45,400 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_37\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_38\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_39\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_40\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_4\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_41\track_with_time.txt
+2024-10-01 14:35:45,401 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_43\track_with_time.txt
+2024-10-01 14:35:45,402 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_42\track_with_time.txt
+2024-10-01 14:35:45,402 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_45\track_with_time.txt
+2024-10-01 14:35:45,402 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_44\track_with_time.txt
+2024-10-01 14:35:45,403 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_47\track_with_time.txt
+2024-10-01 14:35:45,403 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_46\track_with_time.txt
+2024-10-01 14:35:45,403 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_48\track_with_time.txt
+2024-10-01 14:35:45,404 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_5\track_with_time.txt
+2024-10-01 14:35:45,404 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_50\track_with_time.txt
+2024-10-01 14:35:45,405 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_49\track_with_time.txt
+2024-10-01 14:35:45,405 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_52\track_with_time.txt
+2024-10-01 14:35:45,405 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_54\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_55\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_56\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_51\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_58\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_57\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_59\track_with_time.txt
+2024-10-01 14:35:45,406 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_6\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_53\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_63\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_60\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_61\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_62\track_with_time.txt
+2024-10-01 14:35:45,407 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_65\track_with_time.txt
+2024-10-01 14:35:45,408 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_67\track_with_time.txt
+2024-10-01 14:35:45,408 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_64\track_with_time.txt
+2024-10-01 14:35:45,408 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_69\track_with_time.txt
+2024-10-01 14:35:45,408 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_68\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_66\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_7\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_70\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_74\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_71\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_75\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_77\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_78\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_73\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_79\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_76\track_with_time.txt
+2024-10-01 14:35:45,409 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_8\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_81\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_72\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_82\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_84\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_9\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_86\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_87\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_89\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_83\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_88\track_with_time.txt
+2024-10-01 14:35:45,410 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_95\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_92\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_94\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_97\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_90\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_98\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_93\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_96\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_80\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_99\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_91\track_with_time.txt
+2024-10-01 14:35:45,411 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB_1\2024-08-21_14-20-27_RhodamineB_1_track_85\track_with_time.txt
+2024-10-01 14:35:45,412 - ERROR - No valid SD values calculated. Please check your input data.
+NoneType: None
+2024-10-01 14:35:45,479 - INFO - Processing completed.
+2024-10-01 16:44:40,849 - INFO - Starting processing...
+2024-10-01 16:44:40,850 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-01 16:44:40,850 - INFO - Calculating SD values...
+2024-10-01 16:44:40,857 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_0\track_with_time.txt
+2024-10-01 16:44:40,858 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_1\track_with_time.txt
+2024-10-01 16:44:40,858 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_10\track_with_time.txt
+2024-10-01 16:44:40,858 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_11\track_with_time.txt
+2024-10-01 16:44:40,859 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_12\track_with_time.txt
+2024-10-01 16:44:40,860 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_14\track_with_time.txt
+2024-10-01 16:44:40,860 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_15\track_with_time.txt
+2024-10-01 16:44:40,861 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_16\track_with_time.txt
+2024-10-01 16:44:40,861 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_13\track_with_time.txt
+2024-10-01 16:44:40,863 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_18\track_with_time.txt
+2024-10-01 16:44:40,863 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_19\track_with_time.txt
+2024-10-01 16:44:40,864 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_20\track_with_time.txt
+2024-10-01 16:44:40,864 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_2\track_with_time.txt
+2024-10-01 16:44:40,865 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_21\track_with_time.txt
+2024-10-01 16:44:40,865 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_23\track_with_time.txt
+2024-10-01 16:44:40,866 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_17\track_with_time.txt
+2024-10-01 16:44:40,867 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_22\track_with_time.txt
+2024-10-01 16:44:40,867 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_24\track_with_time.txt
+2024-10-01 16:44:40,868 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_25\track_with_time.txt
+2024-10-01 16:44:40,868 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_28\track_with_time.txt
+2024-10-01 16:44:40,868 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_27\track_with_time.txt
+2024-10-01 16:44:40,868 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_26\track_with_time.txt
+2024-10-01 16:44:40,869 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_29\track_with_time.txt
+2024-10-01 16:44:40,869 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_3\track_with_time.txt
+2024-10-01 16:44:40,869 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_30\track_with_time.txt
+2024-10-01 16:44:40,870 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_32\track_with_time.txt
+2024-10-01 16:44:40,870 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_35\track_with_time.txt
+2024-10-01 16:44:40,870 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_33\track_with_time.txt
+2024-10-01 16:44:40,870 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_31\track_with_time.txt
+2024-10-01 16:44:40,871 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_34\track_with_time.txt
+2024-10-01 16:44:40,871 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_36\track_with_time.txt
+2024-10-01 16:44:40,872 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_37\track_with_time.txt
+2024-10-01 16:44:40,873 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_39\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_38\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_44\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_42\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_46\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_43\track_with_time.txt
+2024-10-01 16:44:40,874 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_40\track_with_time.txt
+2024-10-01 16:44:40,875 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_4\track_with_time.txt
+2024-10-01 16:44:40,875 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_48\track_with_time.txt
+2024-10-01 16:44:40,875 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_47\track_with_time.txt
+2024-10-01 16:44:40,875 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_50\track_with_time.txt
+2024-10-01 16:44:40,875 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_51\track_with_time.txt
+2024-10-01 16:44:40,876 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_49\track_with_time.txt
+2024-10-01 16:44:40,877 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_53\track_with_time.txt
+2024-10-01 16:44:40,877 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_54\track_with_time.txt
+2024-10-01 16:44:40,878 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_41\track_with_time.txt
+2024-10-01 16:44:40,879 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_45\track_with_time.txt
+2024-10-01 16:44:40,879 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_55\track_with_time.txt
+2024-10-01 16:44:40,879 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_52\track_with_time.txt
+2024-10-01 16:44:40,879 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_57\track_with_time.txt
+2024-10-01 16:44:40,879 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_58\track_with_time.txt
+2024-10-01 16:44:40,880 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_59\track_with_time.txt
+2024-10-01 16:44:40,880 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_56\track_with_time.txt
+2024-10-01 16:44:40,880 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_61\track_with_time.txt
+2024-10-01 16:44:40,881 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_6\track_with_time.txt
+2024-10-01 16:44:40,881 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_66\track_with_time.txt
+2024-10-01 16:44:40,881 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_68\track_with_time.txt
+2024-10-01 16:44:40,881 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_63\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_65\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_7\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_70\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_5\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_73\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_62\track_with_time.txt
+2024-10-01 16:44:40,882 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_64\track_with_time.txt
+2024-10-01 16:44:40,883 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_72\track_with_time.txt
+2024-10-01 16:44:40,883 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_78\track_with_time.txt
+2024-10-01 16:44:40,883 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_8\track_with_time.txt
+2024-10-01 16:44:40,883 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_76\track_with_time.txt
+2024-10-01 16:44:40,883 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_80\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_74\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_81\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_77\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_71\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_79\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_69\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_86\track_with_time.txt
+2024-10-01 16:44:40,884 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_75\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_67\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_9\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_60\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_85\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_92\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_89\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_83\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_90\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_82\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_84\track_with_time.txt
+2024-10-01 16:44:40,885 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_93\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_99\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_95\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_97\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_88\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_87\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_96\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_98\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_94\track_with_time.txt
+2024-10-01 16:44:40,886 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_91\track_with_time.txt
+2024-10-01 16:44:40,886 - ERROR - No valid SD values calculated. Please check your input data.
+NoneType: None
+2024-10-01 16:44:40,932 - INFO - Processing completed.
+2024-10-01 16:45:28,268 - INFO - Starting processing...
+2024-10-01 16:45:28,268 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-01 16:45:28,268 - INFO - Calculating SD values...
+2024-10-01 16:45:28,273 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_0\track_with_time.txt
+2024-10-01 16:45:28,274 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_10\track_with_time.txt
+2024-10-01 16:45:28,274 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_1\track_with_time.txt
+2024-10-01 16:45:28,274 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_11\track_with_time.txt
+2024-10-01 16:45:28,275 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_12\track_with_time.txt
+2024-10-01 16:45:28,275 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_13\track_with_time.txt
+2024-10-01 16:45:28,276 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_14\track_with_time.txt
+2024-10-01 16:45:28,276 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_15\track_with_time.txt
+2024-10-01 16:45:28,277 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_16\track_with_time.txt
+2024-10-01 16:45:28,277 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_17\track_with_time.txt
+2024-10-01 16:45:28,277 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_18\track_with_time.txt
+2024-10-01 16:45:28,278 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_19\track_with_time.txt
+2024-10-01 16:45:28,278 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_2\track_with_time.txt
+2024-10-01 16:45:28,279 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_21\track_with_time.txt
+2024-10-01 16:45:28,279 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_20\track_with_time.txt
+2024-10-01 16:45:28,280 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_22\track_with_time.txt
+2024-10-01 16:45:28,280 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_23\track_with_time.txt
+2024-10-01 16:45:28,280 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_25\track_with_time.txt
+2024-10-01 16:45:28,280 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_24\track_with_time.txt
+2024-10-01 16:45:28,281 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_26\track_with_time.txt
+2024-10-01 16:45:28,281 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_27\track_with_time.txt
+2024-10-01 16:45:28,283 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_30\track_with_time.txt
+2024-10-01 16:45:28,283 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_3\track_with_time.txt
+2024-10-01 16:45:28,283 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_28\track_with_time.txt
+2024-10-01 16:45:28,284 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_29\track_with_time.txt
+2024-10-01 16:45:28,284 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_31\track_with_time.txt
+2024-10-01 16:45:28,286 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_32\track_with_time.txt
+2024-10-01 16:45:28,286 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_33\track_with_time.txt
+2024-10-01 16:45:28,287 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_34\track_with_time.txt
+2024-10-01 16:45:28,287 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_38\track_with_time.txt
+2024-10-01 16:45:28,288 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_36\track_with_time.txt
+2024-10-01 16:45:28,288 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_39\track_with_time.txt
+2024-10-01 16:45:28,289 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_4\track_with_time.txt
+2024-10-01 16:45:28,289 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_35\track_with_time.txt
+2024-10-01 16:45:28,289 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_37\track_with_time.txt
+2024-10-01 16:45:28,289 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_41\track_with_time.txt
+2024-10-01 16:45:28,290 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_40\track_with_time.txt
+2024-10-01 16:45:28,291 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_42\track_with_time.txt
+2024-10-01 16:45:28,291 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_43\track_with_time.txt
+2024-10-01 16:45:28,291 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_44\track_with_time.txt
+2024-10-01 16:45:28,291 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_45\track_with_time.txt
+2024-10-01 16:45:28,291 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_46\track_with_time.txt
+2024-10-01 16:45:28,293 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_47\track_with_time.txt
+2024-10-01 16:45:28,293 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_48\track_with_time.txt
+2024-10-01 16:45:28,294 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_50\track_with_time.txt
+2024-10-01 16:45:28,295 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_52\track_with_time.txt
+2024-10-01 16:45:28,296 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_54\track_with_time.txt
+2024-10-01 16:45:28,296 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_51\track_with_time.txt
+2024-10-01 16:45:28,296 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_49\track_with_time.txt
+2024-10-01 16:45:28,296 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_55\track_with_time.txt
+2024-10-01 16:45:28,298 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_56\track_with_time.txt
+2024-10-01 16:45:28,298 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_5\track_with_time.txt
+2024-10-01 16:45:28,299 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_58\track_with_time.txt
+2024-10-01 16:45:28,299 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_57\track_with_time.txt
+2024-10-01 16:45:28,300 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_60\track_with_time.txt
+2024-10-01 16:45:28,300 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_63\track_with_time.txt
+2024-10-01 16:45:28,300 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_6\track_with_time.txt
+2024-10-01 16:45:28,300 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_67\track_with_time.txt
+2024-10-01 16:45:28,301 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_61\track_with_time.txt
+2024-10-01 16:45:28,301 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_64\track_with_time.txt
+2024-10-01 16:45:28,301 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_71\track_with_time.txt
+2024-10-01 16:45:28,302 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_53\track_with_time.txt
+2024-10-01 16:45:28,302 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_65\track_with_time.txt
+2024-10-01 16:45:28,302 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_59\track_with_time.txt
+2024-10-01 16:45:28,303 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_62\track_with_time.txt
+2024-10-01 16:45:28,303 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_75\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_70\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_76\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_68\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_77\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_69\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_7\track_with_time.txt
+2024-10-01 16:45:28,304 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_79\track_with_time.txt
+2024-10-01 16:45:28,305 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_72\track_with_time.txt
+2024-10-01 16:45:28,305 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_80\track_with_time.txt
+2024-10-01 16:45:28,305 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_82\track_with_time.txt
+2024-10-01 16:45:28,305 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_78\track_with_time.txt
+2024-10-01 16:45:28,305 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_74\track_with_time.txt
+2024-10-01 16:45:28,306 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_84\track_with_time.txt
+2024-10-01 16:45:28,306 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_86\track_with_time.txt
+2024-10-01 16:45:28,306 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_87\track_with_time.txt
+2024-10-01 16:45:28,306 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_73\track_with_time.txt
+2024-10-01 16:45:28,306 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_83\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_9\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_85\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_90\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_81\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_93\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_66\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_8\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_97\track_with_time.txt
+2024-10-01 16:45:28,307 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_88\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_99\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_96\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_98\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_89\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_92\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_94\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_95\track_with_time.txt
+2024-10-01 16:45:28,308 - INFO - Missing file: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\2024-08-21_14-20-27_RhodamineB001_track_91\track_with_time.txt
+2024-10-01 16:45:28,308 - ERROR - No valid SD values calculated. Please check your input data.
+NoneType: None
+2024-10-01 16:45:28,332 - INFO - Processing completed.
+2024-10-02 12:08:04,876 - INFO - Starting processing...
+2024-10-02 12:08:04,877 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-02 12:08:04,877 - INFO - Calculating SD values...
+2024-10-02 12:08:05,322 - INFO - SD Summary saved.
+2024-10-02 12:08:05,322 - INFO - Running SD Threshold Clustering...
+2024-10-02 12:08:05,322 - INFO - Calculating auto-threshold using first derivative...
+2024-10-02 12:08:05,323 - INFO - Auto Threshold Calculated: 4.8031
+2024-10-02 12:08:05,323 - INFO - Clustering Results saved.
+2024-10-02 12:08:05,323 - INFO - Generating interactive plot...
+2024-10-02 12:08:06,446 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241002_120806.html
+2024-10-02 12:08:06,447 - INFO - Classifying files...
+2024-10-02 12:08:40,091 - INFO - File classification completed.
+2024-10-02 12:08:40,092 - INFO - Computing movement metrics...
+2024-10-02 12:08:40,388 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-02 12:08:40,389 - INFO - Processing completed.
+2024-10-02 12:11:46,893 - INFO - Starting processing...
+2024-10-02 12:11:46,894 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-02 12:11:46,895 - INFO - Calculating SD values...
+2024-10-02 12:11:47,104 - INFO - SD Summary saved.
+2024-10-02 12:11:47,111 - INFO - Running SD Threshold Clustering...
+2024-10-02 12:11:47,111 - INFO - Calculating auto-threshold using first derivative...
+2024-10-02 12:11:47,111 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-02 12:11:47,112 - INFO - Clustering Results saved.
+2024-10-02 12:11:47,112 - INFO - Generating interactive plot...
+2024-10-02 12:11:47,157 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241002_121147.html
+2024-10-02 12:11:47,157 - INFO - Classifying files...
+2024-10-02 12:11:52,197 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_21: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:52,236 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_21: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_21\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:52,859 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_18: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:52,860 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_18: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_18\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:54,428 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_20: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:54,430 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_20: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_20\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:54,737 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_2: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:54,739 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_2: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_2\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:54,890 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_0: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:54,891 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_0: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_0\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:55,381 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_1: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', '[WinError 112] There is not enough space on the disk')]
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\NTF.py", line 353, in copy_file
+    shutil.copytree(src, dst)
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 600, in copytree
+    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Python\Conda_env\NTF\Lib\shutil.py", line 554, in _copytree
+    raise Error(errors)
+shutil.Error: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', '[WinError 112] There is not enough space on the disk')]
+2024-10-02 12:11:55,382 - ERROR - Error copying D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1 to D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\non_stationary\2024-08-21_09-46-32_RhodamineB002_track_1: [('D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', 'D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\\non_stationary\\2024-08-21_09-46-32_RhodamineB002_track_1\\track.tif', '[WinError 112] There is not enough space on the disk')]
+NoneType: None
+2024-10-02 12:11:55,451 - INFO - File classification completed.
+2024-10-02 12:11:55,453 - INFO - Computing movement metrics...
+2024-10-02 12:11:55,643 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-02 12:11:55,643 - INFO - Processing completed.
+2024-10-02 12:22:35,973 - INFO - Starting processing...
+2024-10-02 12:22:35,973 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-02 12:22:35,973 - INFO - Calculating SD values...
+2024-10-02 12:22:36,141 - INFO - SD Summary saved.
+2024-10-02 12:22:36,141 - INFO - Running SD Threshold Clustering...
+2024-10-02 12:22:36,142 - INFO - Calculating auto-threshold using first derivative...
+2024-10-02 12:22:36,142 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-02 12:22:36,147 - INFO - Clustering Results saved.
+2024-10-02 12:22:36,152 - INFO - Generating interactive plot...
+2024-10-02 12:22:36,198 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241002_122236.html
+2024-10-02 12:22:36,200 - INFO - Classifying files...
+2024-10-02 12:22:47,726 - INFO - File classification completed.
+2024-10-02 12:22:47,727 - INFO - Computing movement metrics...
+2024-10-02 12:22:47,825 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-02 12:22:47,841 - INFO - Processing completed.
+2024-10-02 12:27:46,080 - INFO - Starting processing...
+2024-10-02 12:27:46,080 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-02 12:27:46,081 - INFO - Calculating SD values...
+2024-10-02 12:27:46,240 - INFO - SD Summary saved.
+2024-10-02 12:27:46,240 - INFO - Running K-Means Clustering...
+2024-10-02 12:27:46,474 - INFO - Optimal number of clusters detected: 2
+2024-10-02 12:27:46,486 - INFO - Clustering Results saved.
+2024-10-02 12:27:46,487 - INFO - Generating interactive plot...
+2024-10-02 12:27:46,567 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241002_122746.html
+2024-10-02 12:27:46,567 - INFO - Classifying files...
+2024-10-02 12:27:57,159 - INFO - File classification completed.
+2024-10-02 12:27:57,160 - INFO - Computing movement metrics...
+2024-10-02 12:27:57,257 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-02 12:27:57,274 - INFO - Processing completed.
+2024-10-02 15:05:35,025 - INFO - Starting processing...
+2024-10-02 15:05:35,025 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-02 15:05:35,025 - INFO - Calculating SD values...
+2024-10-02 15:05:35,552 - INFO - SD Summary saved.
+2024-10-02 15:05:35,552 - INFO - Running SD Threshold Clustering...
+2024-10-02 15:05:35,552 - INFO - Calculating auto-threshold using first derivative...
+2024-10-02 15:05:35,552 - INFO - Auto Threshold Calculated: 4.8031
+2024-10-02 15:05:35,568 - INFO - Clustering Results saved.
+2024-10-02 15:05:35,568 - INFO - Generating interactive plot...
+2024-10-02 15:05:36,144 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241002_150536.html
+2024-10-02 15:05:36,144 - INFO - Classifying files...
+2024-10-02 15:06:02,335 - INFO - File classification completed.
+2024-10-02 15:06:02,335 - INFO - Computing movement metrics...
+2024-10-02 15:06:02,634 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-02 15:06:02,634 - INFO - Processing completed.
+2024-10-02 15:09:02,557 - INFO - Starting processing...
+2024-10-02 15:09:02,557 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-02 15:09:02,559 - INFO - Calculating SD values...
+2024-10-02 15:09:02,709 - INFO - SD Summary saved.
+2024-10-02 15:09:02,709 - INFO - Running SD Threshold Clustering...
+2024-10-02 15:09:02,709 - INFO - Calculating auto-threshold using first derivative...
+2024-10-02 15:09:02,710 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-02 15:09:02,710 - INFO - Clustering Results saved.
+2024-10-02 15:09:02,710 - INFO - Generating interactive plot...
+2024-10-02 15:09:02,759 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241002_150902.html
+2024-10-02 15:09:02,759 - INFO - Classifying files...
+2024-10-02 15:09:11,570 - INFO - File classification completed.
+2024-10-02 15:09:11,570 - INFO - Computing movement metrics...
+2024-10-02 15:09:11,670 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-02 15:09:11,671 - INFO - Processing completed.
+2024-10-03 17:12:26,406 - INFO - Starting processing...
+2024-10-03 17:12:26,407 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:12:26,407 - INFO - Calculating SD values...
+2024-10-03 17:12:26,571 - INFO - SD Summary saved.
+2024-10-03 17:12:26,571 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:12:26,572 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:12:26,572 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-03 17:12:26,573 - INFO - Clustering Results saved.
+2024-10-03 17:12:26,573 - INFO - Generating interactive plot...
+2024-10-03 17:12:27,892 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_171227.html
+2024-10-03 17:12:27,892 - INFO - Classifying files...
+2024-10-03 17:12:38,193 - INFO - File classification completed.
+2024-10-03 17:12:38,193 - INFO - Computing movement metrics...
+2024-10-03 17:12:38,284 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:12:38,300 - INFO - Processing completed.
+2024-10-03 17:22:37,357 - INFO - Starting processing...
+2024-10-03 17:22:37,357 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:22:37,358 - INFO - Calculating SD values...
+2024-10-03 17:22:37,474 - INFO - SD Summary saved.
+2024-10-03 17:22:37,475 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:22:37,475 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:22:37,475 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-03 17:22:37,490 - INFO - Clustering Results saved.
+2024-10-03 17:22:37,490 - INFO - Generating interactive plot...
+2024-10-03 17:22:38,070 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_172238.html
+2024-10-03 17:22:38,070 - INFO - Classifying files...
+2024-10-03 17:22:46,794 - INFO - File classification completed.
+2024-10-03 17:22:46,794 - INFO - Computing movement metrics...
+2024-10-03 17:22:46,890 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:22:46,891 - INFO - Processing completed.
+2024-10-03 17:25:34,971 - INFO - Starting processing...
+2024-10-03 17:25:34,971 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:25:34,972 - INFO - Calculating SD values...
+2024-10-03 17:25:35,086 - INFO - SD Summary saved.
+2024-10-03 17:25:35,087 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:25:35,087 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:25:35,087 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-03 17:25:35,088 - INFO - Clustering Results saved.
+2024-10-03 17:25:35,088 - INFO - Generating interactive plot...
+2024-10-03 17:25:35,739 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_172535.html
+2024-10-03 17:25:35,740 - INFO - Classifying files...
+2024-10-03 17:25:44,241 - INFO - File classification completed.
+2024-10-03 17:25:44,241 - INFO - Computing movement metrics...
+2024-10-03 17:25:44,335 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:25:44,335 - INFO - Processing completed.
+2024-10-03 17:33:28,166 - INFO - Starting processing...
+2024-10-03 17:33:28,166 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:33:28,166 - INFO - Calculating SD values...
+2024-10-03 17:33:28,315 - INFO - SD Summary saved.
+2024-10-03 17:33:28,316 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:33:28,316 - INFO - Calculating auto-threshold using Kneedle algorithm...
+2024-10-03 17:33:28,316 - INFO - Auto Threshold Calculated: 756.0446
+2024-10-03 17:33:28,316 - INFO - Auto Threshold Calculated: 756.0446
+2024-10-03 17:33:28,316 - INFO - Clustering Results saved.
+2024-10-03 17:33:28,316 - INFO - Generating interactive plot...
+2024-10-03 17:33:29,029 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_173328.html
+2024-10-03 17:33:29,029 - INFO - Classifying files...
+2024-10-03 17:33:37,643 - INFO - File classification completed.
+2024-10-03 17:33:37,644 - INFO - Computing movement metrics...
+2024-10-03 17:33:37,665 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:33:37,668 - INFO - Processing completed.
+2024-10-03 17:41:07,653 - INFO - History loaded successfully.
+2024-10-03 17:41:40,082 - INFO - History saved successfully.
+2024-10-03 17:41:40,086 - INFO - Starting processing...
+2024-10-03 17:41:40,086 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:41:40,086 - INFO - Calculating SD values...
+2024-10-03 17:41:40,198 - INFO - SD Summary saved.
+2024-10-03 17:41:40,198 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:41:40,199 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:41:40,199 - INFO - Using significance level: 0.05
+2024-10-03 17:41:40,199 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-03 17:41:40,199 - INFO - Clustering Results saved.
+2024-10-03 17:41:40,199 - INFO - Generating interactive plot...
+2024-10-03 17:41:40,781 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_174140.html
+2024-10-03 17:41:40,782 - INFO - Classifying files...
+2024-10-03 17:41:49,335 - INFO - File classification completed.
+2024-10-03 17:41:49,336 - INFO - Computing movement metrics...
+2024-10-03 17:41:49,457 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:41:49,457 - INFO - Processing completed.
+2024-10-03 17:42:53,323 - INFO - History saved successfully.
+2024-10-03 17:42:53,325 - INFO - Starting processing...
+2024-10-03 17:42:53,325 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:42:53,326 - INFO - Calculating SD values...
+2024-10-03 17:42:53,424 - INFO - SD Summary saved.
+2024-10-03 17:42:53,436 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:42:53,436 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:42:53,451 - INFO - Using significance level: 0.5
+2024-10-03 17:42:53,456 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-03 17:42:53,468 - INFO - Clustering Results saved.
+2024-10-03 17:42:53,478 - INFO - Generating interactive plot...
+2024-10-03 17:42:53,503 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_174253.html
+2024-10-03 17:42:53,503 - INFO - Classifying files...
+2024-10-03 17:43:02,186 - INFO - File classification completed.
+2024-10-03 17:43:02,187 - INFO - Computing movement metrics...
+2024-10-03 17:43:02,274 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:43:02,274 - INFO - Processing completed.
+2024-10-03 17:43:42,681 - INFO - History saved successfully.
+2024-10-03 17:43:42,685 - INFO - Starting processing...
+2024-10-03 17:43:42,686 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 17:43:42,686 - INFO - Calculating SD values...
+2024-10-03 17:43:42,812 - INFO - SD Summary saved.
+2024-10-03 17:43:42,812 - INFO - Running SD Threshold Clustering...
+2024-10-03 17:43:42,812 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 17:43:42,812 - INFO - Using significance level: 1.0
+2024-10-03 17:43:42,812 - INFO - No significant threshold found. All tracks are non-stationary.
+2024-10-03 17:43:42,813 - INFO - No significant threshold found. All tracks are non-stationary.
+2024-10-03 17:43:42,813 - INFO - Clustering Results saved.
+2024-10-03 17:43:42,813 - INFO - Classifying files...
+2024-10-03 17:43:52,928 - INFO - File classification completed.
+2024-10-03 17:43:52,929 - INFO - Computing movement metrics...
+2024-10-03 17:43:53,095 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 17:43:53,095 - INFO - Processing completed.
+2024-10-03 18:25:37,889 - INFO - Starting processing...
+2024-10-03 18:25:37,890 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-03 18:25:37,890 - INFO - Calculating SD values...
+2024-10-03 18:25:38,004 - INFO - SD Summary saved.
+2024-10-03 18:25:38,004 - INFO - Running SD Threshold Clustering...
+2024-10-03 18:25:38,004 - INFO - Clustering Results saved.
+2024-10-03 18:25:38,004 - INFO - Generating interactive plot...
+2024-10-03 18:25:38,806 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241003_182538.html
+2024-10-03 18:25:38,807 - INFO - Classifying files...
+2024-10-03 18:25:48,289 - INFO - File classification completed.
+2024-10-03 18:25:48,290 - INFO - Computing movement metrics...
+2024-10-03 18:25:48,453 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-03 18:25:48,453 - INFO - Processing completed.
+2024-10-03 18:26:19,343 - INFO - Starting processing...
+2024-10-03 18:26:19,343 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/2024-08-21_10-36-00_RhodamineB010
+2024-10-03 18:26:19,343 - INFO - Calculating SD values...
+2024-10-03 18:26:19,479 - INFO - SD Summary saved.
+2024-10-03 18:26:19,484 - INFO - Running SD Threshold Clustering...
+2024-10-03 18:26:19,484 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 18:26:19,484 - INFO - Auto Threshold Calculated: 10.2715
+2024-10-03 18:26:19,484 - INFO - Clustering Results saved.
+2024-10-03 18:26:19,484 - INFO - Generating interactive plot...
+2024-10-03 18:26:19,523 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/Output\Clustering_Results_20241003_182619.html
+2024-10-03 18:26:19,523 - INFO - Classifying files...
+2024-10-03 18:26:32,951 - INFO - File classification completed.
+2024-10-03 18:26:32,952 - INFO - Computing movement metrics...
+2024-10-03 18:26:32,953 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/Output\Movement_Metrics.csv
+2024-10-03 18:26:32,953 - INFO - Processing completed.
+2024-10-03 18:29:13,649 - INFO - Starting processing...
+2024-10-03 18:29:13,649 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB100/2024-08-21_11-04-47_RhodamineB100
+2024-10-03 18:29:13,649 - INFO - Calculating SD values...
+2024-10-03 18:29:13,863 - INFO - SD Summary saved.
+2024-10-03 18:29:13,863 - INFO - Running SD Threshold Clustering...
+2024-10-03 18:29:13,864 - INFO - Calculating auto-threshold using first derivative...
+2024-10-03 18:29:13,864 - INFO - Auto Threshold Calculated: 64.5620
+2024-10-03 18:29:13,864 - INFO - Clustering Results saved.
+2024-10-03 18:29:13,864 - INFO - Generating interactive plot...
+2024-10-03 18:29:13,923 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB100/Output\Clustering_Results_20241003_182913.html
+2024-10-03 18:29:13,923 - INFO - Classifying files...
+2024-10-03 18:29:36,782 - INFO - File classification completed.
+2024-10-03 18:29:36,783 - INFO - Computing movement metrics...
+2024-10-03 18:29:36,891 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB100/Output\Movement_Metrics.csv
+2024-10-03 18:29:36,891 - INFO - Processing completed.
+2024-10-04 16:44:12,514 - INFO - Starting processing...
+2024-10-04 16:44:12,516 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-04 16:44:12,516 - INFO - Calculating SD values...
+2024-10-04 16:44:12,674 - INFO - SD Summary saved.
+2024-10-04 16:44:12,675 - INFO - Running SD Threshold Clustering...
+2024-10-04 16:44:12,676 - INFO - Calculating auto-threshold using first derivative...
+2024-10-04 16:44:12,679 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-04 16:44:12,680 - INFO - Clustering Results saved.
+2024-10-04 16:44:12,680 - INFO - Generating interactive plot...
+2024-10-04 16:44:14,337 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241004_164414.html
+2024-10-04 16:44:14,338 - INFO - Classifying files...
+2024-10-04 16:44:24,458 - INFO - File classification completed.
+2024-10-04 16:44:24,458 - INFO - Computing movement metrics...
+2024-10-04 16:44:24,541 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-04 16:44:24,541 - INFO - Processing completed.
+2024-10-04 17:12:32,166 - INFO - Starting processing...
+2024-10-04 17:12:32,166 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-04 17:12:32,167 - INFO - Calculating SD values...
+2024-10-04 17:12:32,297 - INFO - SD Summary saved.
+2024-10-04 17:12:32,298 - INFO - Running SD Threshold Clustering...
+2024-10-04 17:12:32,298 - INFO - Clustering Results saved.
+2024-10-04 17:12:32,298 - INFO - Generating interactive plot...
+2024-10-04 17:12:33,013 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241004_171232.html
+2024-10-04 17:12:33,014 - INFO - Classifying files...
+2024-10-04 17:12:42,152 - INFO - File classification completed.
+2024-10-04 17:12:42,152 - INFO - Computing movement metrics...
+2024-10-04 17:12:42,280 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-04 17:12:42,281 - INFO - Processing completed.
+2024-10-04 17:12:58,006 - INFO - Starting processing...
+2024-10-04 17:12:58,006 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-04 17:12:58,007 - INFO - Calculating SD values...
+2024-10-04 17:12:58,171 - INFO - SD Summary saved.
+2024-10-04 17:12:58,171 - INFO - Running SD Threshold Clustering...
+2024-10-04 17:12:58,171 - INFO - Clustering Results saved.
+2024-10-04 17:12:58,172 - INFO - Generating interactive plot...
+2024-10-04 17:12:58,203 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241004_171258.html
+2024-10-04 17:12:58,204 - INFO - Classifying files...
+2024-10-04 17:13:14,884 - INFO - File classification completed.
+2024-10-04 17:13:14,885 - INFO - Computing movement metrics...
+2024-10-04 17:13:15,020 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-04 17:13:15,036 - INFO - Processing completed.
+2024-10-04 17:14:03,413 - INFO - Starting processing...
+2024-10-04 17:14:03,413 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-04 17:14:03,414 - INFO - Calculating SD values...
+2024-10-04 17:14:03,545 - INFO - SD Summary saved.
+2024-10-04 17:14:03,550 - INFO - Running SD Threshold Clustering...
+2024-10-04 17:14:03,550 - INFO - Clustering Results saved.
+2024-10-04 17:14:03,550 - INFO - Generating interactive plot...
+2024-10-04 17:14:03,595 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241004_171403.html
+2024-10-04 17:14:03,596 - INFO - Classifying files...
+2024-10-04 17:14:16,924 - INFO - File classification completed.
+2024-10-04 17:14:16,925 - INFO - Computing movement metrics...
+2024-10-04 17:14:17,061 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-04 17:14:17,062 - INFO - Processing completed.
+2024-10-04 17:19:22,742 - INFO - Starting processing...
+2024-10-04 17:19:22,743 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-04 17:19:22,743 - INFO - Calculating SD values...
+2024-10-04 17:19:23,162 - INFO - SD Summary saved.
+2024-10-04 17:19:23,173 - INFO - Running SD Threshold Clustering...
+2024-10-04 17:19:23,184 - INFO - Clustering Results saved.
+2024-10-04 17:19:23,194 - INFO - Generating interactive plot...
+2024-10-04 17:19:23,215 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241004_171923.html
+2024-10-04 17:19:23,215 - INFO - Classifying files...
+2024-10-04 17:19:48,734 - INFO - File classification completed.
+2024-10-04 17:19:48,735 - INFO - Computing movement metrics...
+2024-10-04 17:19:49,090 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-04 17:19:49,091 - INFO - Processing completed.
+2024-10-04 17:30:15,088 - INFO - Starting processing...
+2024-10-04 17:30:15,088 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-04 17:30:15,088 - INFO - Calculating SD values...
+2024-10-04 17:30:15,603 - INFO - SD Summary saved.
+2024-10-04 17:30:15,603 - INFO - Running SD Threshold Clustering...
+2024-10-04 17:30:15,603 - INFO - Calculating auto-threshold using first derivative...
+2024-10-04 17:30:15,603 - INFO - Auto Threshold Calculated: 4.8031
+2024-10-04 17:30:15,626 - INFO - Clustering Results saved.
+2024-10-04 17:30:15,626 - INFO - Generating interactive plot...
+2024-10-04 17:30:15,699 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241004_173015.html
+2024-10-04 17:30:15,700 - INFO - Classifying files...
+2024-10-04 17:30:41,201 - INFO - File classification completed.
+2024-10-04 17:30:41,202 - INFO - Computing movement metrics...
+2024-10-04 17:30:41,519 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-04 17:30:41,520 - INFO - Processing completed.
+2024-10-06 18:34:01,181 - INFO - Starting processing...
+2024-10-06 18:34:01,183 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-06 18:34:01,183 - INFO - Calculating features...
+2024-10-06 18:34:01,221 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_10\track.txt
+2024-10-06 18:34:01,224 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_12\track.txt
+2024-10-06 18:34:01,226 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_13\track.txt
+2024-10-06 18:34:01,233 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_17\track.txt
+2024-10-06 18:34:01,233 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_15\track.txt
+2024-10-06 18:34:01,235 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_11\track.txt
+2024-10-06 18:34:01,239 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_14\track.txt
+2024-10-06 18:34:01,249 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0\track.txt
+2024-10-06 18:34:01,256 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_16\track.txt
+2024-10-06 18:34:01,258 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1\track.txt
+2024-10-06 18:34:01,258 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18\track.txt
+2024-10-06 18:34:01,272 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_5\track.txt
+2024-10-06 18:34:01,273 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_4\track.txt
+2024-10-06 18:34:01,277 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_22\track.txt
+2024-10-06 18:34:01,279 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_19\track.txt
+2024-10-06 18:34:01,282 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_6\track.txt
+2024-10-06 18:34:01,285 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_3\track.txt
+2024-10-06 18:34:01,286 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_9\track.txt
+2024-10-06 18:34:01,289 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20\track.txt
+2024-10-06 18:34:01,289 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21\track.txt
+2024-10-06 18:34:01,289 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2\track.txt
+2024-10-06 18:34:01,289 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_8\track.txt
+2024-10-06 18:34:01,290 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_7\track.txt
+2024-10-06 18:34:01,291 - ERROR - No valid features calculated. Please check your input data.
+NoneType: None
+2024-10-06 18:34:01,327 - INFO - Processing completed.
+2024-10-06 18:34:10,592 - INFO - Starting processing...
+2024-10-06 18:34:10,592 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-06 18:34:10,593 - INFO - Calculating features...
+2024-10-06 18:34:10,602 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_10\track.txt
+2024-10-06 18:34:10,612 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_11\track.txt
+2024-10-06 18:34:10,621 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_13\track.txt
+2024-10-06 18:34:10,621 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_12\track.txt
+2024-10-06 18:34:10,621 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_15\track.txt
+2024-10-06 18:34:10,625 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_14\track.txt
+2024-10-06 18:34:10,634 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_17\track.txt
+2024-10-06 18:34:10,639 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1\track.txt
+2024-10-06 18:34:10,642 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0\track.txt
+2024-10-06 18:34:10,645 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_19\track.txt
+2024-10-06 18:34:10,649 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_16\track.txt
+2024-10-06 18:34:10,654 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_5\track.txt
+2024-10-06 18:34:10,659 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18\track.txt
+2024-10-06 18:34:10,662 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2\track.txt
+2024-10-06 18:34:10,662 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_4\track.txt
+2024-10-06 18:34:10,665 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_7\track.txt
+2024-10-06 18:34:10,665 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21\track.txt
+2024-10-06 18:34:10,665 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_22\track.txt
+2024-10-06 18:34:10,669 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_6\track.txt
+2024-10-06 18:34:10,671 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_9\track.txt
+2024-10-06 18:34:10,672 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_8\track.txt
+2024-10-06 18:34:10,673 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_3\track.txt
+2024-10-06 18:34:10,674 - INFO - Invalid format in D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20\track.txt
+2024-10-06 18:34:10,680 - ERROR - No valid features calculated. Please check your input data.
+NoneType: None
+2024-10-06 18:34:10,712 - INFO - Processing completed.
+2024-10-07 09:08:40,984 - INFO - Starting processing...
+2024-10-07 09:08:40,985 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-07 09:08:40,985 - INFO - Calculating SD values...
+2024-10-07 09:08:44,480 - INFO - SD Summary saved.
+2024-10-07 09:08:44,480 - INFO - Running SD Threshold Clustering...
+2024-10-07 09:08:44,480 - INFO - Calculating auto-threshold using first derivative...
+2024-10-07 09:08:44,480 - INFO - Auto Threshold Calculated: 4.8031
+2024-10-07 09:08:44,480 - INFO - Clustering Results saved.
+2024-10-07 09:08:44,482 - INFO - Generating interactive plot...
+2024-10-07 09:08:46,585 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241007_090846.html
+2024-10-07 09:08:46,589 - INFO - Classifying files...
+2024-10-07 09:09:16,202 - INFO - File classification completed.
+2024-10-07 09:09:16,202 - INFO - Computing movement metrics...
+2024-10-07 09:09:19,935 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-07 09:09:19,968 - INFO - Processing completed.
+2024-10-16 12:23:04,310 - INFO - Starting processing...
+2024-10-16 12:23:04,311 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001
+2024-10-16 12:23:04,311 - INFO - Calculating SD values...
+2024-10-16 12:23:04,753 - INFO - SD Summary saved.
+2024-10-16 12:23:04,754 - INFO - Running SD Threshold Clustering...
+2024-10-16 12:23:04,755 - INFO - Calculating auto-threshold using first derivative...
+2024-10-16 12:23:04,755 - INFO - Auto Threshold Calculated: 4.8031
+2024-10-16 12:23:04,768 - INFO - Clustering Results saved.
+2024-10-16 12:23:04,769 - INFO - Generating interactive plot...
+2024-10-16 12:23:05,448 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Clustering_Results_20241016_122305.html
+2024-10-16 12:23:05,448 - INFO - Classifying files...
+2024-10-16 12:23:45,007 - INFO - File classification completed.
+2024-10-16 12:23:45,007 - INFO - Computing movement metrics...
+2024-10-16 12:23:45,301 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB001/Output\Movement_Metrics.csv
+2024-10-16 12:23:45,302 - INFO - Processing completed.
+2024-10-18 12:36:46,433 - INFO - Starting processing...
+2024-10-18 12:36:46,435 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-18 12:36:46,436 - INFO - Calculating SD values...
+2024-10-18 12:36:47,210 - INFO - SD Summary saved.
+2024-10-18 12:36:47,212 - INFO - Running SD Threshold Clustering...
+2024-10-18 12:36:47,212 - INFO - Calculating auto-threshold using first derivative...
+2024-10-18 12:36:47,213 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-18 12:36:47,214 - INFO - Clustering Results saved.
+2024-10-18 12:36:47,214 - INFO - Generating interactive plot...
+2024-10-18 12:36:49,444 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241018_123649.html
+2024-10-18 12:36:49,445 - INFO - Classifying files...
+2024-10-18 12:37:02,547 - INFO - File classification completed.
+2024-10-18 12:37:02,547 - INFO - Computing movement metrics...
+2024-10-18 12:37:03,048 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-18 12:37:03,080 - INFO - Processing completed.
+2024-10-18 17:14:50,561 - INFO - Starting classification...
+2024-10-18 17:14:50,570 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0
+2024-10-18 17:14:50,572 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1
+2024-10-18 17:14:50,575 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_10
+2024-10-18 17:14:50,576 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_11
+2024-10-18 17:14:50,578 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_12
+2024-10-18 17:14:50,578 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_13
+2024-10-18 17:14:50,579 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_14
+2024-10-18 17:14:50,579 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_15
+2024-10-18 17:14:50,579 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_16
+2024-10-18 17:14:50,580 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_17
+2024-10-18 17:14:50,580 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18
+2024-10-18 17:14:50,581 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_19
+2024-10-18 17:14:50,581 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2
+2024-10-18 17:14:50,581 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20
+2024-10-18 17:14:50,582 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21
+2024-10-18 17:14:50,582 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_22
+2024-10-18 17:14:50,582 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_3
+2024-10-18 17:14:50,582 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_4
+2024-10-18 17:14:50,583 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_5
+2024-10-18 17:14:50,583 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_6
+2024-10-18 17:14:50,583 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_7
+2024-10-18 17:14:50,584 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_8
+2024-10-18 17:14:50,584 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_9
+2024-10-18 17:14:50,584 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\report
+2024-10-18 17:14:50,600 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/Output\classification_results.csv
+2024-10-18 17:14:50,600 - INFO - Classification completed.
+2024-10-18 17:15:27,365 - INFO - Starting classification...
+2024-10-18 17:15:27,384 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_0
+2024-10-18 17:15:27,385 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_1
+2024-10-18 17:15:27,387 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_10
+2024-10-18 17:15:27,387 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_11
+2024-10-18 17:15:27,387 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_12
+2024-10-18 17:15:27,388 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_13
+2024-10-18 17:15:27,388 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_14
+2024-10-18 17:15:27,388 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_15
+2024-10-18 17:15:27,388 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_16
+2024-10-18 17:15:27,389 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_17
+2024-10-18 17:15:27,389 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_18
+2024-10-18 17:15:27,389 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_19
+2024-10-18 17:15:27,389 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_2
+2024-10-18 17:15:27,390 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_20
+2024-10-18 17:15:27,390 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_21
+2024-10-18 17:15:27,390 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_22
+2024-10-18 17:15:27,390 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_3
+2024-10-18 17:15:27,391 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_4
+2024-10-18 17:15:27,391 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_5
+2024-10-18 17:15:27,391 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_6
+2024-10-18 17:15:27,392 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_7
+2024-10-18 17:15:27,392 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_8
+2024-10-18 17:15:27,392 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_9
+2024-10-18 17:15:27,392 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\report
+2024-10-18 17:15:27,393 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/Output\classification_results.csv
+2024-10-18 17:15:27,393 - INFO - Classification completed.
+2024-10-18 17:26:11,698 - INFO - Starting classification...
+2024-10-18 17:26:22,960 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002\report
+2024-10-18 17:26:22,977 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/Output\classification_results.csv
+2024-10-18 17:26:22,978 - INFO - Classification completed.
+2024-10-18 17:30:19,035 - INFO - Starting processing...
+2024-10-18 17:30:19,035 - INFO - Processing directory 1/1: F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/2024-08-21_09-46-32_RhodamineB002
+2024-10-18 17:30:19,036 - INFO - Calculating SD values...
+2024-10-18 17:30:19,190 - INFO - SD Summary saved.
+2024-10-18 17:30:19,190 - INFO - Running SD Threshold Clustering...
+2024-10-18 17:30:19,191 - INFO - Calculating auto-threshold using first derivative...
+2024-10-18 17:30:19,191 - INFO - Auto Threshold Calculated: 264.1184
+2024-10-18 17:30:19,191 - INFO - Clustering Results saved.
+2024-10-18 17:30:19,192 - INFO - Generating interactive plot...
+2024-10-18 17:30:19,935 - INFO - Interactive plot saved at F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/Output\Clustering_Results_20241018_173019.html
+2024-10-18 17:30:19,935 - INFO - Classifying files...
+2024-10-18 17:30:29,534 - INFO - File classification completed.
+2024-10-18 17:30:29,535 - INFO - Computing movement metrics...
+2024-10-18 17:30:29,641 - INFO - Movement metrics saved at F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB002/Output\Movement_Metrics.csv
+2024-10-18 17:30:29,641 - INFO - Processing completed.
+2024-10-19 22:27:15,455 - INFO - Starting classification...
+2024-10-19 22:28:00,274 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-19 22:28:00,286 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-19 22:28:00,286 - INFO - Classification completed.
+2024-10-20 11:14:48,342 - INFO - Starting classification...
+2024-10-20 11:14:48,773 - ERROR - Error during classification: 'ClassificationWorker' object has no attribute 'copy_folder'
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\Test.py", line 439, in run
+    self.process_directory()
+  File "D:\UWien\NTF\main\Test.py", line 463, in process_directory
+    self.copy_folder(subfolder, classification)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'ClassificationWorker' object has no attribute 'copy_folder'
+2024-10-20 11:14:48,777 - ERROR - Error during classification: 'ClassificationWorker' object has no attribute 'copy_folder'
+NoneType: None
+2024-10-20 11:23:08,202 - INFO - Starting classification...
+2024-10-20 11:24:02,017 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:24:02,074 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:24:02,075 - INFO - Classification completed.
+2024-10-20 11:30:48,486 - INFO - Starting classification...
+2024-10-20 11:31:44,656 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:31:44,660 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:31:44,660 - INFO - Classification completed.
+2024-10-20 11:32:25,611 - INFO - Starting classification...
+2024-10-20 11:33:23,715 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:33:23,721 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:33:23,722 - INFO - Classification completed.
+2024-10-20 11:34:41,291 - INFO - Starting classification...
+2024-10-20 11:35:58,194 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:35:58,197 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:35:58,197 - INFO - Classification completed.
+2024-10-20 11:38:59,819 - INFO - Starting classification...
+2024-10-20 11:39:49,838 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:39:49,843 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:39:49,843 - INFO - Classification completed.
+2024-10-20 11:55:39,893 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-20 11:55:39,894 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-20 11:55:39,895 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-20 11:55:39,898 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-20 11:55:39,898 - INFO - Starting classification...
+2024-10-20 11:56:30,397 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
+2024-10-20 11:56:30,402 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
+2024-10-20 11:56:30,402 - INFO - Classification completed.
