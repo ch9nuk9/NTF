@@ -437,7 +437,7 @@ A5: You can adjust classification thresholds in the Advanced Analysis tab to ref
 4. LICENSE: License file for the project.
 
 
-##### Detailed Explanation on How to Use the Script
+## Detailed Explanation on How to Use the Script
 - Setting Up Your Data - Input Directory Structure:
 The input directory should contain subfolders for each track. Each subfolder should contain:
 track.txt: A CSV file with X and Y columns representing the coordinates of the track.
@@ -458,24 +458,24 @@ input_directory/
 On Linux/macOS, run ./run_ntf.sh or double-click the desktop shortcut.
 On Windows, double-click run_ntf.bat or its shortcut.
 
-#####  Configure the Application:
+###  Configure the Application:
 - Input Directory: Click Browse and select your input directory.
 - Output Directory: Click Browse and select your desired output directory.
 - Frame Rate (FPS): Enter the frame rate (e.g., 10).
 - Processing Pipeline: Check or uncheck steps as needed.
 
-###### Set Clustering Options: 
+### Set Clustering Options: 
 - Clustering Method: Choose between SD Threshold and K-Means.SD Threshold Options: Enable Auto Threshold or input a custom threshold, or K-Means Options: Enable Auto-detect k or input the number of clusters.
 
 ###### Start Processing:
 - Click Start Processing to begin the analysis.
 - Monitor progress through the Progress Bar and Logs & Messages tab.
 
-###### View Results:
+### View Results:
 - After processing, interactive plots are displayed in the Viewing Panel.
 - Navigate through plots using Previous Plot and Next Plot.
 
-###### Using Advanced Analysis
+### Using Advanced Analysis
 - Navigate to Advanced Analysis Tab, Click on the Advanced Analysis tab in the application, Adjust Thresholds:
 - Use Auto Classification: Check to use default thresholds.
 - Uncheck Use Auto Classification to input custom thresholds for:
@@ -485,14 +485,14 @@ On Windows, double-click run_ntf.bat or its shortcut.
 4. Circularity
 5. Start Classification:
 
-###### Click Start Classification to classify tracks.
-###### Monitor progress and logs in the Advanced Analysis tab.
-###### Review Classification Results:
+### Click Start Classification to classify tracks.
+### Monitor progress and logs in the Advanced Analysis tab.
+### Review Classification Results:
 
 - Classified tracks are organized into worm, artifact, and unknown folders in the output directory.
 - Analyze misclassified tracks and adjust thresholds if necessary.
 
-###### Tips for Effective Use
+### Tips for Effective Use
 - Data Quality: Ensure that track.txt files contain accurate X and Y data.
 Videos should be clear for effective feature extraction.
 Threshold Adjustments: Start with auto classification and assess results.
@@ -502,14 +502,14 @@ Adjust thresholds incrementally based on the characteristics of misclassified tr
 - Monitoring Logs: Regularly check the Logs & Messages tab for errors or warnings.
 Use the ntf_app.log file for detailed logging information.
 
-###### Troubleshooting
+### Troubleshooting
 - Application Does Not Launch: Verify that the conda environment is correctly set up.
 Ensure that the script (run_ntf.sh or run_ntf.bat) has the correct paths.
 - Errors During Processing: Check the logs for specific error messages.
 - Ensure that input files are in the correct format and directories.
 - Incorrect Classification: Adjust classification thresholds in the Advanced Analysis tab. Review the shape features of misclassified tracks to inform threshold adjustments.
 
-###### Additional Resources
+## Additional Resources
 - Plotly Documentation: https://plotly.com/python/
 - scikit-learn Documentation: https://scikit-learn.org/stable/
 - OpenCV Documentation: https://docs.opencv.org/
