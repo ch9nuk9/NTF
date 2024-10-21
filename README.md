@@ -443,6 +443,8 @@ The input directory should contain subfolders for each track. Each subfolder sho
 track.txt: A CSV file with X and Y columns representing the coordinates of the track.
 track.avi: A video file of the track (required for advanced analysis).
 Example Structure:
+
+```
 input_directory/
 ├── track_001/
 │   ├── track.txt
@@ -451,7 +453,7 @@ input_directory/
 │   ├── track.txt
 │   └── track.avi
 └── ...
-
+```
 - Running the Application - Launch the Application:
 On Linux/macOS, run ./run_ntf.sh or double-click the desktop shortcut.
 On Windows, double-click run_ntf.bat or its shortcut.
