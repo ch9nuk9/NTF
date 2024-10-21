@@ -77,7 +77,7 @@ The **Nematode Tracks Filter (NTF)** is a Python-based graphical user interface 
 
 To run the Nematode Tracks Filter application, ensure you have the following installed:
 
-- **Anaconda or Miniconda (Python 3.6+)**
+- **Anaconda or Miniconda (Python 3.10+)**
 
 **Required Python Packages:**
 
