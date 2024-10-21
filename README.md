@@ -46,11 +46,6 @@ A comprehensive tool for analyzing and filtering nematode movement tracks from S
   - [Tips for Effective Use](#tips-for-effective-use)
   - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
-- [Future Work](#future-work)
-- [How to Cite This Tool](#how-to-cite-this-tool)
-- [Feedback and Support](#feedback-and-support)
-- [Important Notes](#important-notes)
-- [Final Remarks](#final-remarks)
 
 ---
 
