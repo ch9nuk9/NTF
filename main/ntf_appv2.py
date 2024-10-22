@@ -11,7 +11,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui, QtWebEngineWidgets
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QFileDialog, QMessageBox, QLabel, QProgressBar,
     QVBoxLayout, QWidget, QPushButton, QLineEdit, QCheckBox, QComboBox,
-    QHBoxLayout, QTextEdit, QGroupBox, QTabWidget, QSpinBox, QListWidget, QSplitter
+    QHBoxLayout, QTextEdit, QGroupBox, QTabWidget, QSpinBox, QListWidget, QSplitter,
+    QDoubleSpinBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QObject, QThread, QUrl
 import plotly.express as px
@@ -19,6 +20,8 @@ import plotly.offline as po
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from concurrent.futures import ThreadPoolExecutor
+import cv2  # OpenCV for video and image processing
+from PIL import Image  # <-- Newly added import for handling .tif files
 
 # Configure logging
 logging.basicConfig(
@@ -36,7 +39,7 @@ class WorkerSignals(QObject):
     finished = pyqtSignal()
     update_sd_threshold = pyqtSignal(str)
     update_k_value = pyqtSignal(int)
-    plot_paths = pyqtSignal(list)  # New signal to send plot paths to the GUI
+    plot_paths = pyqtSignal(list)
 
 class Worker(QObject):
     def __init__(self, parent, input_dir, output_dir, fps):
@@ -422,6 +425,196 @@ class Worker(QObject):
         path_length = np.sum(distances)
         return path_length
 
+class ClassificationWorker(QObject):
+    def __init__(self, input_dir, output_dir, thresholds, auto_classification, batch_processing):
+        super().__init__()
+        self.input_dir = input_dir
+        self.output_dir = output_dir
+        self.thresholds = thresholds
+        self.auto_classification = auto_classification
+        self.batch_processing = batch_processing  # Add this line
+        self.signals = WorkerSignals()
+
+    def run(self):
+        try:
+            # Log the classification settings
+            self.log_classification_settings()
+
+            self.signals.message.emit("Starting classification...")
+            self.process_directory()
+            self.signals.progress.emit(100)
+            self.signals.message.emit("Classification completed.")
+            self.signals.finished.emit()
+        except Exception as e:
+            error_message = f"Error during classification: {str(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+            self.signals.finished.emit()
+
+    def log_classification_settings(self):
+        if self.auto_classification:
+            thresholds = {
+                'eccentricity': 0.8,
+                'solidity': 0.9,
+                'aspect_ratio': 1.5,
+                'circularity': 0.5
+            }
+        else:
+            thresholds = self.thresholds
+
+        settings = {
+            'auto_classification': self.auto_classification,
+            'thresholds': thresholds
+        }
+        logging.info(f"Classification settings: {settings}")
+        self.signals.message.emit(f"Classification settings: {settings}")
+
+    def process_directory(self):
+    # Check if batch processing is enabled in Advanced Analysis
+        if self.batch_processing:
+            # Batch processing mode: process multiple subdirectories
+            subfolders = [os.path.join(self.input_dir, d) for d in os.listdir(self.input_dir)
+                        if os.path.isdir(os.path.join(self.input_dir, d))]
+        else:
+            # Single directory mode: process only the input directory
+            subfolders = [self.input_dir]
+
+        # Ensure subfolders is always defined before proceeding
+        total_folders = len(subfolders)
+
+        results = []
+        for idx, subfolder in enumerate(subfolders):
+            track_tif = os.path.join(subfolder, 'track.tif')
+            if os.path.isfile(track_tif):
+                classification = self.process_image_stack(track_tif)  # Process the track.tif file
+                if classification:
+                    results.append({'Folder': subfolder, 'Classification': classification})
+                    # Copy the folder to the output directory
+                    self.copy_folder(subfolder, classification)
+            else:
+                # If track.tif is not found, emit an error message
+                self.signals.message.emit(f"track.tif not found in {subfolder}")
+            progress = int(((idx + 1) / total_folders) * 100)
+            self.signals.progress.emit(progress)
+
+        # Save classification results to CSV
+        results_df = pd.DataFrame(results)
+        csv_path = os.path.join(self.output_dir, 'classification_results.csv')
+        results_df.to_csv(csv_path, index=False)
+        self.signals.message.emit(f"Results saved to {csv_path}")
+
+    from PIL import Image
+
+    def process_image_stack(self, tif_path):
+        try:
+            img = Image.open(tif_path)
+            total_frames = img.n_frames  # Number of frames in the stack
+            frame_indices = np.random.choice(range(total_frames), size=min(500, total_frames), replace=False)
+            features_list = []
+
+            for idx in frame_indices:
+                img.seek(idx)  # Go to the frame at index idx
+                frame = np.array(img)
+                feature = self.extract_features(frame)  # Use the same feature extraction logic
+                if feature:
+                    features_list.append(feature)
+
+            if features_list:
+                # Average the features
+                avg_features = np.mean(features_list, axis=0)
+                classification = self.classify_object(avg_features)
+                return classification
+            else:
+                self.signals.message.emit(f"No features extracted from {tif_path}")
+                return None
+        except Exception as e:
+            error_message = f"Error processing image stack {tif_path}: {str(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+            return None
+
+
+    def extract_features(self, frame):
+        try:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Thresholding
+            _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+            # Find contours
+            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if contours:
+                # Assume the largest contour is the object
+                contour = max(contours, key=cv2.contourArea)
+                features = self.compute_shape_features(contour)
+                return features
+            else:
+                return None
+        except Exception as e:
+            error_message = f"Error extracting features: {str(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+            return None
+
+    def compute_shape_features(self, contour):
+        area = cv2.contourArea(contour)
+        if area == 0:
+            return None
+        perimeter = cv2.arcLength(contour, True)
+        # Circularity
+        circularity = 4 * np.pi * area / (perimeter ** 2) if perimeter != 0 else 0
+        # Aspect Ratio
+        x, y, w, h = cv2.boundingRect(contour)
+        aspect_ratio = float(w) / h if h != 0 else 0
+        # Solidity
+        hull = cv2.convexHull(contour)
+        hull_area = cv2.contourArea(hull)
+        solidity = area / hull_area if hull_area != 0 else 0
+        # Eccentricity
+        if len(contour) >= 5:
+            ellipse = cv2.fitEllipse(contour)
+            (center, axes, orientation) = ellipse
+            majoraxis_length = max(axes)
+            minoraxis_length = min(axes)
+            eccentricity = np.sqrt(1 - (minoraxis_length / majoraxis_length) ** 2)
+        else:
+            eccentricity = 0
+        return [eccentricity, solidity, aspect_ratio, circularity]
+
+    def classify_object(self, features):
+        eccentricity, solidity, aspect_ratio, circularity = features
+        if self.auto_classification:
+            # Default thresholds
+            ecc_thresh = 0.8
+            sol_thresh = 0.9
+            ar_thresh = 1.5
+            circ_thresh = 0.5
+        else:
+            ecc_thresh = self.thresholds['eccentricity']
+            sol_thresh = self.thresholds['solidity']
+            ar_thresh = self.thresholds['aspect_ratio']
+            circ_thresh = self.thresholds['circularity']
+
+        # Classification rules
+        if eccentricity > ecc_thresh and solidity < sol_thresh:
+            return 'worm'
+        elif aspect_ratio > ar_thresh and circularity < circ_thresh:
+            return 'worm'
+        elif solidity > sol_thresh and abs(aspect_ratio - 1) < 0.1:
+            return 'artifact'
+        else:
+            return 'unknown'
+
+    def copy_folder(self, source_folder, classification):
+        try:
+            # Copy the entire source_folder
+            dest_folder = os.path.join(self.output_dir, classification, os.path.basename(source_folder))
+            if os.path.exists(dest_folder):
+                shutil.rmtree(dest_folder)
+            shutil.copytree(source_folder, dest_folder)
+        except Exception as e:
+            error_message = f"Error copying folder {source_folder}: {str(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+
 class NematodeTracksFilter(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -459,7 +652,41 @@ class NematodeTracksFilter(QMainWindow):
         # Tab 1: Configuration
         self.tab1 = QWidget()
         self.tabs.addTab(self.tab1, "Configuration")
+        self.init_tab1()
 
+        # Tab 2: History
+        self.tab2 = QWidget()
+        self.tabs.addTab(self.tab2, "History")
+        self.init_tab2()
+
+        # Tab 3: Logs and Messages
+        self.tab3 = QWidget()
+        self.tabs.addTab(self.tab3, "Logs & Messages")
+        self.init_tab3()
+
+        # New Tab: Advanced Analysis
+        self.tab_advanced_analysis = QWidget()
+        self.tabs.addTab(self.tab_advanced_analysis, "Advanced Analysis")
+        self.init_advanced_analysis_tab()
+
+        # Set main widget and layout
+        self.main_widget.setLayout(self.layout)
+        self.setCentralWidget(self.main_widget)
+
+        # Thread and Worker
+        self.thread = None
+        self.worker = None
+
+        # Additional signal connections
+        self.signals = WorkerSignals()
+        self.signals.update_sd_threshold.connect(self.update_sd_threshold_input)
+        self.signals.update_k_value.connect(self.update_k_input)
+
+        # Initialize plot navigation buttons
+        self.prev_button.setEnabled(False)
+        self.next_button.setEnabled(False)
+
+    def init_tab1(self):
         # Create the main layout for tab1
         self.tab1_layout = QVBoxLayout()
 
@@ -634,9 +861,7 @@ class NematodeTracksFilter(QMainWindow):
 
         self.tab1.setLayout(self.tab1_layout)
 
-        # Tab 2: History
-        self.tab2 = QWidget()
-        self.tabs.addTab(self.tab2, "History")
+    def init_tab2(self):
         self.tab2_layout = QVBoxLayout()
         self.history_label = QLabel("History of Operations:")
         self.history_label.setStyleSheet("color: #f0f0f0;")
@@ -648,9 +873,7 @@ class NematodeTracksFilter(QMainWindow):
         self.tab2_layout.addWidget(self.load_history_button)
         self.tab2.setLayout(self.tab2_layout)
 
-        # Tab 3: Logs and Messages
-        self.tab3 = QWidget()
-        self.tabs.addTab(self.tab3, "Logs & Messages")
+    def init_tab3(self):
         self.tab3_layout = QVBoxLayout()
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
@@ -658,22 +881,157 @@ class NematodeTracksFilter(QMainWindow):
         self.tab3_layout.addWidget(self.log_text)
         self.tab3.setLayout(self.tab3_layout)
 
-        # Set main widget and layout
-        self.main_widget.setLayout(self.layout)
-        self.setCentralWidget(self.main_widget)
+    def init_advanced_analysis_tab(self):
+        self.advanced_layout = QVBoxLayout()
 
-        # Thread and Worker
-        self.thread = None
-        self.worker = None
+        # Information Label
+        info_label = QLabel("The functions in this tab use the input and output directories specified in the Configuration tab.")
+        info_label.setStyleSheet("color: #f0f0f0;")
+        info_label.setWordWrap(True)
+        self.advanced_layout.addWidget(info_label)
 
-        # Additional signal connections
-        self.signals = WorkerSignals()
-        self.signals.update_sd_threshold.connect(self.update_sd_threshold_input)
-        self.signals.update_k_value.connect(self.update_k_input)
+        # Threshold Adjustment Controls
+        self.threshold_group = QGroupBox("Threshold Adjustments")
+        self.threshold_layout = QVBoxLayout()
+        # Eccentricity
+        self.ecc_label = QLabel("Eccentricity Threshold:")
+        self.ecc_spin = QDoubleSpinBox()
+        self.ecc_spin.setRange(0.0, 1.0)
+        self.ecc_spin.setSingleStep(0.01)
+        self.ecc_spin.setValue(0.8)
+        self.ecc_layout = QHBoxLayout()
+        self.ecc_layout.addWidget(self.ecc_label)
+        self.ecc_layout.addWidget(self.ecc_spin)
+        self.threshold_layout.addLayout(self.ecc_layout)
+        # Solidity
+        self.solidity_label = QLabel("Solidity Threshold:")
+        self.solidity_spin = QDoubleSpinBox()
+        self.solidity_spin.setRange(0.0, 1.0)
+        self.solidity_spin.setSingleStep(0.01)
+        self.solidity_spin.setValue(0.9)
+        self.solidity_layout = QHBoxLayout()
+        self.solidity_layout.addWidget(self.solidity_label)
+        self.solidity_layout.addWidget(self.solidity_spin)
+        self.threshold_layout.addLayout(self.solidity_layout)
+        # Aspect Ratio
+        self.aspect_ratio_label = QLabel("Aspect Ratio Threshold:")
+        self.aspect_ratio_spin = QDoubleSpinBox()
+        self.aspect_ratio_spin.setRange(0.0, 10.0)
+        self.aspect_ratio_spin.setSingleStep(0.1)
+        self.aspect_ratio_spin.setValue(1.5)
+        self.aspect_ratio_layout = QHBoxLayout()
+        self.aspect_ratio_layout.addWidget(self.aspect_ratio_label)
+        self.aspect_ratio_layout.addWidget(self.aspect_ratio_spin)
+        self.threshold_layout.addLayout(self.aspect_ratio_layout)
+        # Circularity
+        self.circularity_label = QLabel("Circularity Threshold:")
+        self.circularity_spin = QDoubleSpinBox()
+        self.circularity_spin.setRange(0.0, 1.0)
+        self.circularity_spin.setSingleStep(0.01)
+        self.circularity_spin.setValue(0.5)
+        self.circularity_layout = QHBoxLayout()
+        self.circularity_layout.addWidget(self.circularity_label)
+        self.circularity_layout.addWidget(self.circularity_spin)
+        self.threshold_layout.addLayout(self.circularity_layout)
+        # Auto Threshold Checkbox
+        self.auto_threshold_checkbox_class = QCheckBox("Use Auto Classification")
+        self.auto_threshold_checkbox_class.setChecked(True)
+        self.threshold_layout.addWidget(self.auto_threshold_checkbox_class)
 
-        # Initialize plot navigation buttons
-        self.prev_button.setEnabled(False)
-        self.next_button.setEnabled(False)
+        self.threshold_group.setLayout(self.threshold_layout)
+        self.advanced_layout.addWidget(self.threshold_group)
+        
+        # Batch Processing Checkbox for Advanced Analysis
+        self.batch_checkbox_advanced = QCheckBox("Enable Batch Processing")
+        self.batch_checkbox_advanced.setStyleSheet("color: #f0f0f0;")
+        self.batch_checkbox_advanced.setChecked(False)  # Default to unchecked
+        self.advanced_layout.addWidget(self.batch_checkbox_advanced)
+
+        # Start Classification Button
+        self.classify_button = QPushButton("Start Classification")
+        self.classify_button.clicked.connect(self.start_classification)
+        self.advanced_layout.addWidget(self.classify_button)
+
+        # Progress Bar
+        self.class_progress_bar = QProgressBar()
+        self.advanced_layout.addWidget(self.class_progress_bar)
+
+        # Log Text
+        self.class_log_text = QTextEdit()
+        self.class_log_text.setReadOnly(True)
+        self.advanced_layout.addWidget(self.class_log_text)
+
+        self.tab_advanced_analysis.setLayout(self.advanced_layout)
+
+    def start_classification(self):
+        try:
+            input_dir = self.input_path.text()
+            output_dir = self.output_path.text()
+            if not os.path.isdir(input_dir):
+                raise ValueError("Invalid input directory.")
+            if not os.path.isdir(output_dir):
+                raise ValueError("Invalid output directory.")
+
+            thresholds = {
+                'eccentricity': self.ecc_spin.value(),
+                'solidity': self.solidity_spin.value(),
+                'aspect_ratio': self.aspect_ratio_spin.value(),
+                'circularity': self.circularity_spin.value()
+            }
+            auto_classification = self.auto_threshold_checkbox_class.isChecked()
+            batch_processing = self.batch_checkbox_advanced.isChecked()  # Capture batch processing state
+
+            # Log the classification settings
+            settings = {
+                'auto_classification': auto_classification,
+                'thresholds': thresholds,
+                'batch_processing': batch_processing  # Log the batch setting
+            }
+            logging.info(f"Classification settings: {settings}")
+            self.log_message(f"Classification settings: {settings}")
+
+            # Disable UI elements during processing
+            self.classify_button.setEnabled(False)
+            self.class_progress_bar.setValue(0)
+
+            # Create worker and thread
+            self.class_thread = QThread()
+            self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing)
+            self.class_worker.moveToThread(self.class_thread)
+
+            # Connect signals
+            self.class_thread.started.connect(self.class_worker.run)
+            self.class_worker.signals.progress.connect(self.update_class_progress)
+            self.class_worker.signals.message.connect(self.log_class_message)
+            self.class_worker.signals.error.connect(self.log_class_error)
+            self.class_worker.signals.finished.connect(self.class_thread.quit)
+            self.class_worker.signals.finished.connect(self.class_worker.deleteLater)
+            self.class_thread.finished.connect(self.class_thread.deleteLater)
+
+            # Start the thread
+            self.class_thread.start()
+
+            # Re-enable the button when processing is done
+            self.class_thread.finished.connect(lambda: self.classify_button.setEnabled(True))
+        except Exception as e:
+            error_message = f"Error in start_classification: {str(e)}"
+            logging.error(error_message)
+            self.log_class_error(error_message)
+            QMessageBox.critical(self, "Error", str(e))
+
+    def update_class_progress(self, value):
+        self.class_progress_bar.setValue(value)
+
+    def log_class_message(self, message):
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        self.class_log_text.append(f"[{timestamp}] {message}")
+        logging.info(message)
+
+    def log_class_error(self, message):
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        self.class_log_text.append(f"[{timestamp}] ERROR: {message}")
+        logging.error(message, exc_info=True)
+        QMessageBox.critical(self, "Error", message)
 
     def toggle_clustering_options(self):
         method = self.cluster_method_combo.currentText()
@@ -691,8 +1049,6 @@ class NematodeTracksFilter(QMainWindow):
             self.k_label.show()
             self.k_input.show()
             self.k_auto_checkbox.show()
-
-    # Removed update_parameter_value method
 
     def update_sd_threshold_input(self, value):
         self.sd_threshold_input.setText(value)

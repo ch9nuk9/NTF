@@ -1048,3 +1048,50 @@ NoneType: None
 2024-10-20 11:56:30,397 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/2024-08-21_14-20-27_RhodamineB001\report
 2024-10-20 11:56:30,402 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB001/Output\classification_results.csv
 2024-10-20 11:56:30,402 - INFO - Classification completed.
+2024-10-21 09:16:21,266 - INFO - Starting processing...
+2024-10-21 09:16:21,266 - INFO - Processing directory 1/1: D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/2024-08-21_10-36-00_RhodamineB010
+2024-10-21 09:16:21,267 - INFO - Calculating SD values...
+2024-10-21 09:16:21,825 - INFO - SD Summary saved.
+2024-10-21 09:16:21,825 - INFO - Running SD Threshold Clustering...
+2024-10-21 09:16:21,827 - INFO - Calculating auto-threshold using first derivative...
+2024-10-21 09:16:21,827 - INFO - Auto Threshold Calculated: 10.2715
+2024-10-21 09:16:21,828 - INFO - Clustering Results saved.
+2024-10-21 09:16:21,828 - INFO - Generating interactive plot...
+2024-10-21 09:16:23,632 - INFO - Interactive plot saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/Output\Clustering_Results_20241021_091623.html
+2024-10-21 09:16:23,633 - INFO - Classifying files...
+2024-10-21 09:16:48,829 - INFO - File classification completed.
+2024-10-21 09:16:48,829 - INFO - Computing movement metrics...
+2024-10-21 09:16:49,563 - INFO - Movement metrics saved at D:/UWien/Rhodamine_B/2024-08-21_09-46-32_RhodamineB010/Output\Movement_Metrics.csv
+2024-10-21 09:16:49,596 - INFO - Processing completed.
+2024-10-22 15:10:20,592 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-22 15:10:20,592 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-22 15:10:20,595 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-22 15:10:20,598 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}}
+2024-10-22 15:10:20,598 - INFO - Starting classification...
+2024-10-22 15:10:42,678 - INFO - track.avi not found in F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB010/2024-08-21_10-36-00_RhodamineB010\report
+2024-10-22 15:10:42,768 - INFO - Results saved to F:/Demo_Test171024/2024-08-21_09-46-32_RhodamineB010/Output\classification_results.csv
+2024-10-22 15:10:42,768 - INFO - Classification completed.
+2024-10-22 15:41:38,274 - ERROR - Error in start_classification: Invalid input directory.
+2024-10-22 15:41:38,276 - ERROR - Error in start_classification: Invalid input directory.
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\ntf_app.py", line 960, in start_classification
+    raise ValueError("Invalid input directory.")
+ValueError: Invalid input directory.
+2024-10-22 15:42:25,866 - ERROR - Error in start_processing: Invalid input directory.
+2024-10-22 15:42:25,868 - ERROR - Error in start_processing: Invalid input directory.
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\ntf_app.py", line 1063, in start_processing
+    raise ValueError("Invalid input directory.")
+ValueError: Invalid input directory.
+2024-10-22 15:44:54,884 - ERROR - Error in start_processing: Invalid input directory.
+2024-10-22 15:44:54,885 - ERROR - Error in start_processing: Invalid input directory.
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\ntf_app.py", line 1063, in start_processing
+    raise ValueError("Invalid input directory.")
+ValueError: Invalid input directory.
+2024-10-22 15:46:33,072 - ERROR - Error in start_processing: Invalid input directory.
+2024-10-22 15:46:33,073 - ERROR - Error in start_processing: Invalid input directory.
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\ntf_app.py", line 1063, in start_processing
+    raise ValueError("Invalid input directory.")
+ValueError: Invalid input directory.
