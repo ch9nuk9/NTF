@@ -22,6 +22,7 @@ from sklearn.metrics import silhouette_score
 from concurrent.futures import ThreadPoolExecutor
 import cv2  # OpenCV for video and image processing
 from PIL import Image  # <-- Newly added import for handling .tif files
+from threading import Lock
 
 # Configure logging
 logging.basicConfig(
@@ -51,6 +52,7 @@ class Worker(QObject):
         self.signals = WorkerSignals()
         self.total_tracks = 0  # Keep track of the total number of tracks
         self.plot_files = []  # List to store plot file paths
+        self.file_lock = Lock()  # Global lock to prevent concurrent access to files
 
     def run(self):
         try:
@@ -76,7 +78,7 @@ class Worker(QObject):
             self.signals.plot_paths.emit(self.plot_files)  # Send plot paths to GUI
             self.signals.finished.emit()
         except Exception as e:
-            error_message = f"Error in run: {str(e)}"
+            error_message = f"Error in run: {str(e)}" if str(e) else "Unknown error in run."
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             self.signals.finished.emit()
@@ -86,38 +88,38 @@ class Worker(QObject):
             sd_values = []
             identifiers = []
 
-            # Prepare output subdirectory for this dataset if batch processing
+            # Prepare output subdirectory automatically inside the parent folder for batch processing
             if self.parent.batch_checkbox.isChecked():
-                output_subdir = os.path.join(output_dir, f"dataset_{dir_idx+1}")
+                 # Use the base name of the parent directory for more meaningful folder names
+                output_subdir = os.path.join(parent_dir, "Output")
                 os.makedirs(output_subdir, exist_ok=True)
             else:
-                output_subdir = output_dir
+                output_subdir = output_dir # For single directory processing
 
             # Check if we need to calculate SD
             if self.parent.calculate_sd_checkbox.isChecked():
                 self.signals.message.emit("Calculating SD values...")
-                # Traverse subfolders and calculate SD
-                subfolders = [os.path.join(parent_dir, d) for d in os.listdir(parent_dir)
-                              if os.path.isdir(os.path.join(parent_dir, d))]
-                # Filter subfolders to only include those ending with '_track_*'
-                subfolders = [sf for sf in subfolders if os.path.basename(sf).startswith('_track_') or '_track_' in os.path.basename(sf)]
-
+                # Recursively find subfolders with '_track_' in the name using os.walk
+                subfolders = []
+                for root, dirs, files in os.walk(parent_dir):
+                    subfolders += [os.path.join(root, d) for d in dirs if '_track_' in d]
+                # Log the found subfolders for debugging purposes
+                self.signals.message.emit(f"Found track subfolders: {subfolders}")
+                
+                # Ensure that subfolders were found
                 self.total_tracks = len(subfolders)
                 if self.total_tracks == 0:
-                    self.signals.error.emit("No track folders found ending with '_track_*'.")
-                    return
+                    raise ValueError(f"No track folders found in {parent_dir}.")  # Raise an exception with a clear message
 
                 total_subfolders = len(subfolders)
                 with ThreadPoolExecutor() as executor:
-                    futures = []
-                    for idx, subfolder in enumerate(subfolders):
-                        futures.append(executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders))
+                    futures = [executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders)
+                           for idx, subfolder in enumerate(subfolders)]
                     for future in futures:
                         future.result()
 
                 if not identifiers:
-                    self.signals.error.emit("No valid SD values calculated. Please check your input data.")
-                    return
+                     raise ValueError("No valid SD values calculated. Please check your input data.")  # Raise another exception
 
                 # Save SD Summary
                 sd_summary_df = pd.DataFrame(identifiers)
@@ -157,20 +159,26 @@ class Worker(QObject):
             if self.parent.compute_metrics_checkbox.isChecked():
                 self.compute_movement_metrics(sd_summary_df, output_subdir, fps)
         except Exception as e:
-            error_message = f"Error in process_directory: {str(e)}"
+            error_message = f"Error in process_directory: {str(e)}" if str(e) else "Unknown error in process_directory."
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
 
+    from threading import Lock
+    file_lock = Lock()  # Global lock to prevent concurrent access to files
+    
     def calculate_sd(self, subfolder, identifiers, idx, total):
         try:
             identifier = os.path.basename(subfolder)
             # Adjusted to match your data structure
             track_file = os.path.join(subfolder, 'track.txt')
-            if not os.path.isfile(track_file):
-                self.signals.message.emit(f"Missing file: {track_file}")
-                return
-            df = pd.read_csv(track_file)
+             # Ensure the file is accessed by only one thread at a time
+            with self.file_lock:  # Using the instance variable file_lock
+                if not os.path.isfile(track_file):
+                    self.signals.message.emit(f"Missing file: {track_file}")
+                    return
+                with open(track_file, 'r') as file:
+                    df = pd.read_csv(track_file)
             # Validate required columns
             if not {'X', 'Y'}.issubset(df.columns):
                 self.signals.message.emit(f"Invalid format in {track_file}")
@@ -183,7 +191,7 @@ class Worker(QObject):
             progress = int((idx / total) * 100)
             self.signals.progress.emit(progress)
         except Exception as e:
-            error_message = f"Error in calculate_sd for {subfolder}: {str(e)}"
+            error_message = f"Error in calculate_sd for {subfolder}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -215,7 +223,7 @@ class Worker(QObject):
             # Visualize clustering
             self.visualize_clusters(sd_summary_df, output_dir)
         except Exception as e:
-            error_message = f"Error in sd_threshold_clustering: {str(e)}"
+            error_message = f"Error in sd_threshold_clustering: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
@@ -235,7 +243,7 @@ class Worker(QObject):
             threshold = sd_sorted[max_increase_idx]
             return threshold
         except Exception as e:
-            error_message = f"Error in auto_threshold: {str(e)}"
+            error_message = f"Error in auto_threshold: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
@@ -288,7 +296,7 @@ class Worker(QObject):
             # Visualize clustering
             self.visualize_clusters(sd_summary_df, output_dir)
         except Exception as e:
-            error_message = f"Error in k_means_clustering: {str(e)}"
+            error_message = f"Error in k_means_clustering: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
@@ -313,7 +321,7 @@ class Worker(QObject):
             # Add plot file to the list
             self.plot_files.append(plot_file)
         except Exception as e:
-            error_message = f"Error in visualize_clusters: {str(e)}"
+            error_message = f"Error in visualize_clusters: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -338,7 +346,7 @@ class Worker(QObject):
                     future.result()
             self.signals.message.emit("File classification completed.")
         except Exception as e:
-            error_message = f"Error in classify_files: {str(e)}"
+            error_message = f"Error in classify_files: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -355,7 +363,7 @@ class Worker(QObject):
                 shutil.rmtree(dst)
             shutil.copytree(src, dst)
         except Exception as e:
-            error_message = f"Error copying {src} to {dst}: {str(e)}"
+            error_message = f"Error copying {src} to {dst}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -392,7 +400,7 @@ class Worker(QObject):
                     progress = int((idx / total_tracks) * 100)
                     self.signals.progress.emit(progress)
                 except Exception as e:
-                    error_message = f"Error computing metrics for {track_file}: {str(e)}"
+                    error_message = f"Error computing metrics for {track_file}: {str(e) or repr(e)}"
                     logging.error(error_message, exc_info=True)
                     self.signals.error.emit(error_message)
 
@@ -402,7 +410,7 @@ class Worker(QObject):
             metrics_df.to_csv(metrics_csv, index=False)
             self.signals.message.emit(f"Movement metrics saved at {metrics_csv}")
         except Exception as e:
-            error_message = f"Error in compute_movement_metrics: {str(e)}"
+            error_message = f"Error in compute_movement_metrics: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -446,7 +454,7 @@ class ClassificationWorker(QObject):
             self.signals.message.emit("Classification completed.")
             self.signals.finished.emit()
         except Exception as e:
-            error_message = f"Error during classification: {str(e)}"
+            error_message = f"Error during classification: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             self.signals.finished.emit()
@@ -528,7 +536,7 @@ class ClassificationWorker(QObject):
                 self.signals.message.emit(f"No features extracted from {tif_path}")
                 return None
         except Exception as e:
-            error_message = f"Error processing image stack {tif_path}: {str(e)}"
+            error_message = f"Error processing image stack {tif_path}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             return None
@@ -549,7 +557,7 @@ class ClassificationWorker(QObject):
             else:
                 return None
         except Exception as e:
-            error_message = f"Error extracting features: {str(e)}"
+            error_message = f"Error extracting features: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             return None
@@ -611,7 +619,7 @@ class ClassificationWorker(QObject):
                 shutil.rmtree(dest_folder)
             shutil.copytree(source_folder, dest_folder)
         except Exception as e:
-            error_message = f"Error copying folder {source_folder}: {str(e)}"
+            error_message = f"Error copying folder {source_folder}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -798,6 +806,7 @@ class NematodeTracksFilter(QMainWindow):
         # Batch Processing Option
         self.batch_checkbox = QCheckBox("Enable Batch Processing")
         self.batch_checkbox.setStyleSheet("color: #f0f0f0;")
+        self.batch_checkbox.stateChanged.connect(self.toggle_output_directory)  # Connect checkbox state change to method
         self.top_controls_layout.addWidget(self.batch_checkbox)
 
         # Process Monitoring
@@ -860,7 +869,23 @@ class NematodeTracksFilter(QMainWindow):
         self.tab1_layout.addWidget(self.splitter)
 
         self.tab1.setLayout(self.tab1_layout)
-
+    # Add the toggle_output_directory method after init_tab1
+    def toggle_output_directory(self, state):
+        """
+        Toggle the output directory field based on the batch processing checkbox.
+        Disable the output directory field if batch processing is enabled.
+        """
+        if state == Qt.Checked:
+            # Batch processing is enabled, disable the output path field and button
+            self.output_path.setEnabled(False)
+            self.output_button.setEnabled(False)
+            self.log_message("Batch processing enabled. Output directory is automatically managed.")
+        else:
+            # Batch processing is disabled, enable the output path field and button
+            self.output_path.setEnabled(True)
+            self.output_button.setEnabled(True)
+            self.log_message("Single directory processing mode. Please select an output directory.")
+        
     def init_tab2(self):
         self.tab2_layout = QVBoxLayout()
         self.history_label = QLabel("History of Operations:")
@@ -1014,7 +1039,7 @@ class NematodeTracksFilter(QMainWindow):
             # Re-enable the button when processing is done
             self.class_thread.finished.connect(lambda: self.classify_button.setEnabled(True))
         except Exception as e:
-            error_message = f"Error in start_classification: {str(e)}"
+            error_message = f"Error in start_classification: {str(e) or repr(e)}"
             logging.error(error_message)
             self.log_class_error(error_message)
             QMessageBox.critical(self, "Error", str(e))
@@ -1028,6 +1053,8 @@ class NematodeTracksFilter(QMainWindow):
         logging.info(message)
 
     def log_class_error(self, message):
+        if not message:
+            message = "An unknown error occurred."
         timestamp = datetime.now().strftime('%H:%M:%S')
         self.class_log_text.append(f"[{timestamp}] ERROR: {message}")
         logging.error(message, exc_info=True)
@@ -1074,8 +1101,10 @@ class NematodeTracksFilter(QMainWindow):
             fps = float(self.fps_input.text())
             if not os.path.isdir(input_dir):
                 raise ValueError("Invalid input directory.")
-            if not os.path.isdir(output_dir):
+            # If batch processing is not enabled, validate the output directory
+            if not self.batch_checkbox.isChecked() and not os.path.isdir(output_dir):
                 raise ValueError("Invalid output directory.")
+            # Validate frame rate 
             if fps <= 0:
                 raise ValueError("Frame rate must be positive.")
 
@@ -1109,7 +1138,7 @@ class NematodeTracksFilter(QMainWindow):
             # Re-enable the button when processing is done
             self.thread.finished.connect(lambda: self.process_button.setEnabled(True))
         except Exception as e:
-            error_message = f"Error in start_processing: {str(e)}"
+            error_message = f"Error in start_processing: {str(e) or repr(e)}"
             logging.error(error_message)
             self.log_error(error_message)
             QMessageBox.critical(self, "Error", str(e))
@@ -1153,6 +1182,8 @@ class NematodeTracksFilter(QMainWindow):
         logging.info(message)
 
     def log_error(self, message):
+        if not message:
+            message = "An unknown error occurred."
         timestamp = datetime.now().strftime('%H:%M:%S')
         self.log_text.append(f"[{timestamp}] ERROR: {message}")
         logging.error(message, exc_info=True)
