@@ -345,6 +345,10 @@ class Worker(QObject):
             clustering_csv = os.path.join(output_dir, 'Clustering_Results.csv')
             sd_summary_df.to_csv(clustering_csv, index=False)
             self.signals.message.emit("Clustering Results saved.")
+            logging.info(f"Clustering Results saved at: {clustering_csv}")  # Log the path of Clustering.csv
+            
+            # Print the path to the console for debugging
+            print(f"Clustering Results saved at: {clustering_csv}")
 
             # Visualize clustering
             self.visualize_clusters(sd_summary_df, output_dir)
@@ -353,6 +357,43 @@ class Worker(QObject):
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
+        
+    def delete_stationary_files(self, input_dir, output_dir, *args, **kwargs):
+        try:
+            if self.parent.batch_checkbox.isChecked():
+                # Batch mode: Iterate over session folders
+                session_folders = [os.path.join(input_dir, d) for d in os.listdir(input_dir)
+                                if os.path.isdir(os.path.join(input_dir, d))]
+                for session_folder in session_folders:
+                    output_subdir = os.path.join(session_folder, 'Output')
+                    clustering_csv = os.path.join(output_subdir, 'Clustering_Results.csv')
+                    if not os.path.isfile(clustering_csv):
+                        self.signals.message.emit(f"Clustering_Results.csv not found in {output_subdir}. Skipping deletion for this session.")
+                        continue  # Skip to the next session folder
+                    self.perform_deletion(clustering_csv)
+            else:
+                # Single session mode
+                output_subdir = os.path.join(input_dir, 'Output')
+                clustering_csv = os.path.join(output_subdir, 'Clustering_Results.csv')
+                if not os.path.isfile(clustering_csv):
+                    self.signals.message.emit(f"Clustering_Results.csv not found in {output_subdir}. Skipping deletion.")
+                    return  # Exit the function if the file is not found
+                self.perform_deletion(clustering_csv)
+            self.signals.message.emit("Stationary files deleted successfully.")
+        except Exception as e:
+            error_message = f"Error in delete_stationary_files: {str(e) or repr(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+
+    def perform_deletion(self, clustering_csv):
+        # Load clustering results
+        clustering_df = pd.read_csv(clustering_csv)
+        stationary_paths = clustering_df[clustering_df['Cluster'] == 'Stationary']['Path']
+        # Delete each stationary directory or file
+        for path in stationary_paths:
+            if os.path.exists(path):
+                shutil.rmtree(path)  # Use rmtree to delete directories
+                logging.info(f"Deleted stationary folder: {path}")
 
     def visualize_clusters(self, sd_summary_df, output_dir):
         try:
@@ -888,6 +929,15 @@ class NematodeTracksFilter(QMainWindow):
         self.pipeline_layout.addWidget(self.compute_metrics_checkbox)
         self.pipeline_group.setLayout(self.pipeline_layout)
         self.top_controls_layout.addWidget(self.pipeline_group)
+        
+        # Deletion Checkbox
+        self.delete_stationary_checkbox = QCheckBox("Delete Stationary Files After Processing")
+        self.delete_stationary_checkbox.setStyleSheet("color: #f0f0f0;")
+        self.pipeline_layout.addWidget(self.delete_stationary_checkbox)
+        
+        # Connect the stateChanged signals to check for conflicts
+        self.delete_stationary_checkbox.stateChanged.connect(self.check_for_conflicts)
+        self.classification_checkbox.stateChanged.connect(self.check_for_conflicts)
 
         # Clustering Method Selection
         self.cluster_method_label = QLabel("Clustering Method:")
@@ -997,6 +1047,20 @@ class NematodeTracksFilter(QMainWindow):
         self.tab1_layout.addWidget(self.splitter)
 
         self.tab1.setLayout(self.tab1_layout)
+    
+    def check_for_conflicts(self):
+        if self.delete_stationary_checkbox.isChecked() and self.classification_checkbox.isChecked():
+            QMessageBox.warning(
+                self,
+                "Conflict Detected",
+                'Warning! Conflict Detected:\n\n'
+                'The options "Delete Stationary Files After Processing" and "Classify Files" cannot be used simultaneously. '
+                'Please select only one of these options to avoid conflicts in file handling during processing.'
+            )
+            # Optionally, you can uncheck one of the checkboxes to resolve the conflict
+            # For example:
+            # self.classification_checkbox.setChecked(False)
+        
     # Add the toggle_output_directory method after init_tab1
     def toggle_output_directory(self, state):
         """
@@ -1284,13 +1348,38 @@ class NematodeTracksFilter(QMainWindow):
 
     def start_processing(self):
         try:
+            # Check for conflicting options
+            if self.delete_stationary_checkbox.isChecked() and self.classification_checkbox.isChecked():
+                QMessageBox.warning(
+                    self,
+                    "Conflict Detected",
+                    'Warning! Conflict Detected:\n\n'
+                    'The options "Delete Stationary Files After Processing" and "Classify Files" cannot be used simultaneously. '
+                    'Please select only one of these options to avoid conflicts in file handling during processing.'
+                )
+                return  # Do not proceed with processing
+            
             # Validate inputs
             input_dir = self.input_path.text()
             output_dir = self.output_path.text()
             fps = float(self.fps_input.text())
-            
+                    
             # Determine if batch processing is enabled
             is_batch_mode = self.batch_checkbox.isChecked()
+            
+            # Determine if deletion is enabled
+            delete_stationary = self.delete_stationary_checkbox.isChecked()
+            
+             # Show warning dialog if deletion is enabled
+            if delete_stationary:
+                reply = QMessageBox.critical(
+                    self, "Warning!",
+                    "Warning! This action will permanently delete the stationary objects from the input directory and will clean the input directory to only include mobile worm tracks. Do you want to continue?",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.No:
+                    return  # Abort processing if user selects No
 
             # Validate input directory for batch or single session
             validate_input_directory(input_dir, is_batch_mode)
@@ -1321,18 +1410,32 @@ class NematodeTracksFilter(QMainWindow):
             self.worker.signals.message.connect(self.log_message)
             self.worker.signals.error.connect(self.log_error)
             self.worker.signals.finished.connect(self.thread.quit)
-            self.worker.signals.finished.connect(self.worker.deleteLater)
-            self.thread.finished.connect(self.thread.deleteLater)
+
+            # Update inputs
             self.worker.signals.update_sd_threshold.connect(self.update_sd_threshold_input)
             self.worker.signals.update_k_value.connect(self.update_k_input)
-            self.worker.signals.plot_paths.connect(self.receive_plot_paths)  # New connection
+            self.worker.signals.plot_paths.connect(self.receive_plot_paths)
+            
+            # Add deletion step after clustering or classification
+            if delete_stationary:
+                if self.clustering_checkbox.isChecked():
+                    # Connect the deletion function to the thread's finished signal
+                    self.thread.finished.connect(lambda: self.worker.delete_stationary_files(input_dir, output_dir))
+                else:
+                    self.log_message("Clustering was not performed; skipping deletion of stationary files.")
+            
+            # Connect deleteLater signals after deletion
+            self.worker.signals.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
 
             # Start the thread
             self.thread.start()
 
             # Re-enable the button when processing is done
             self.thread.finished.connect(lambda: self.process_button.setEnabled(True))
+             
         except Exception as e:
+            # Handle exceptions with logging and error message
             error_message = f"Error in start_processing: {str(e) or repr(e)}"
             logging.error(error_message)
             self.log_error(error_message)
