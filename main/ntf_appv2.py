@@ -24,6 +24,9 @@ import cv2  # OpenCV for video and image processing
 from PIL import Image  # <-- Newly added import for handling .tif files
 from threading import Lock
 
+# Print the path where the .ntf_history.json file should be saved
+print(os.path.join(os.path.expanduser('~'), '.ntf_history.json'))
+
 # Global exception handler to catch uncaught exceptions
 def handle_global_exception(exc_type, exc_value, exc_traceback):
     """
@@ -484,13 +487,14 @@ class Worker(QObject):
         return path_length
 
 class ClassificationWorker(QObject):
-    def __init__(self, input_dir, output_dir, thresholds, auto_classification, batch_processing):
+    def __init__(self, input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run):
         super().__init__()
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.thresholds = thresholds
         self.auto_classification = auto_classification
         self.batch_processing = batch_processing  # Add this line
+        self.dry_run = dry_run  # New attribute for dry run mode
         self.signals = WorkerSignals()
 
     def run(self):
@@ -557,8 +561,12 @@ class ClassificationWorker(QObject):
                         classification = self.process_image_stack(track_tif)  # Process the track.tif file
                         if classification:
                             
+                            # In dry run mode, append results instead of moving files
+                            results.append({'Folder': subfolder, 'Classification': classification})
+                            
                             # Copy folder to output directory (inside the session folder)
-                            self.copy_folder(subfolder, classification, output_subdir)
+                            if not self.dry_run:
+                                self.copy_folder(subfolder, classification, output_subdir)
 
                             # Append results to the list
                             results.append({'Folder': subfolder, 'Classification': classification})
@@ -569,6 +577,11 @@ class ClassificationWorker(QObject):
                     progress = int(((idx + 1) / total_folders) * 100)
                     self.signals.progress.emit(progress)
 
+                # Save results to CSV at the end
+                results_df = pd.DataFrame(results)
+                csv_path = os.path.join(self.output_dir, 'classification_dry_run_results.csv' if self.dry_run else 'classification_results.csv')
+                results_df.to_csv(csv_path, index=False)
+                self.signals.message.emit(f"Results saved to {csv_path}")
         else:
             # Single directory mode: process the input directory like a batch
             subfolders = [os.path.join(self.input_dir, d) for d in os.listdir(self.input_dir)
@@ -723,16 +736,21 @@ class ClassificationWorker(QObject):
 
     def copy_folder(self, source_folder, classification, output_subdir):
         try:
+            if self.dry_run:
+            # In dry run mode, log the intended operation only
+                self.signals.message.emit(f"[Dry Run] Would classify {source_folder} as '{classification}'")
+                return  # Exit without copying
+        
             # Copy the entire source_folder
             dest_folder = os.path.join(output_subdir, classification, os.path.basename(source_folder))
             if os.path.exists(dest_folder):
                 shutil.rmtree(dest_folder)
-            shutil.copytree(source_folder, dest_folder)
+                shutil.copytree(source_folder, dest_folder)
         except Exception as e:
             error_message = f"Error copying folder {source_folder}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
-
+            
 class NematodeTracksFilter(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -779,7 +797,7 @@ class NematodeTracksFilter(QMainWindow):
 
         # Tab 3: Logs and Messages
         self.tab3 = QWidget()
-        self.tabs.addTab(self.tab3, "Logs & Messages")
+        self.tabs.addTab(self.tab3, "Process Logs")
         self.init_tab3()
 
         # New Tab: Advanced Analysis
@@ -1098,12 +1116,28 @@ class NematodeTracksFilter(QMainWindow):
 
         # Progress Bar
         self.class_progress_bar = QProgressBar()
+        self.class_progress_bar.setValue(0)  # Set default progress to zero
         self.advanced_layout.addWidget(self.class_progress_bar)
 
         # Log Text
         self.class_log_text = QTextEdit()
         self.class_log_text.setReadOnly(True)
         self.advanced_layout.addWidget(self.class_log_text)
+        
+        # **Newly Added Advanced Analysis History Section**
+        # Advanced Analysis History List
+        self.advanced_history_list = QListWidget()  # Create list widget to display history
+        self.advanced_layout.addWidget(self.advanced_history_list)
+        
+        # Dry Run Checkbox
+        self.dry_run_checkbox = QCheckBox("Dry Run Mode (No file modifications)")
+        self.dry_run_checkbox.setChecked(False)  # Default to unchecked
+        self.advanced_layout.addWidget(self.dry_run_checkbox)
+        
+        # Load Advanced History Button
+        self.load_advanced_history_button = QPushButton("Load Selected Advanced Configuration")
+        self.load_advanced_history_button.clicked.connect(self.load_selected_advanced_history)
+        self.advanced_layout.addWidget(self.load_advanced_history_button)
 
         self.tab_advanced_analysis.setLayout(self.advanced_layout)
         
@@ -1130,6 +1164,9 @@ class NematodeTracksFilter(QMainWindow):
             
             # Determine if batch processing is enabled
             is_batch_mode = self.batch_checkbox_advanced.isChecked()
+            
+            # Capture the dry run checkbox state
+            dry_run = self.dry_run_checkbox.isChecked()  # Capture checkbox state for dry run
             
              # Ensure the input directory exists before validating its structure
             if not os.path.isdir(input_dir):
@@ -1173,7 +1210,7 @@ class NematodeTracksFilter(QMainWindow):
 
             # Create worker and thread
             self.class_thread = QThread()
-            self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing)
+            self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run)
             self.class_worker.moveToThread(self.class_thread)
 
             # Connect signals
@@ -1372,22 +1409,77 @@ class NematodeTracksFilter(QMainWindow):
         self.update_history_list()
 
     def save_history(self):
-        history_file = os.path.join(os.path.expanduser('~'), '.ntf_history.json')
+        history_file = os.path.join(os.getcwd(), '.ntf_history.json')
         with open(history_file, 'w') as f:
             json.dump(self.history, f)
+        print(f"History saved to {history_file}")  # Shows saved history path
+    
+    def save_advanced_history(self):
+        advanced_history_file = os.path.join(os.getcwd(), '.ntf_advanced_history.json')
+        with open(advanced_history_file, 'w') as f:
+            json.dump(self.advanced_history, f)
+        print(f"Advanced Analysis history saved to {advanced_history_file}")
 
     def load_history(self):
-        history_file = os.path.join(os.path.expanduser('~'), '.ntf_history.json')
+        history_file = os.path.join(os.getcwd(), '.ntf_history.json')
         if os.path.isfile(history_file):
             with open(history_file, 'r') as f:
                 self.history = json.load(f)
             self.update_history_list()
-
+        
+        advanced_history_file = os.path.join(os.getcwd(), '.ntf_advanced_history.json')
+        if os.path.isfile(advanced_history_file):
+            with open(advanced_history_file, 'r') as f:
+                self.advanced_history = json.load(f)
+            self.update_advanced_history_list()
+        print("History updated")
+    
     def update_history_list(self):
         self.history_list.clear()
         for idx, config in enumerate(self.history):
             item_text = f"{idx + 1}: {config['timestamp']} - {config['input_directory']}"
             self.history_list.addItem(item_text)
+            
+    def update_advanced_history_list(self):
+        self.advanced_history_list.clear()
+        for idx, config in enumerate(self.advanced_history):
+            item_text = f"{idx + 1}: {config['timestamp']} - {config['input_directory']}"
+            self.advanced_history_list.addItem(item_text)
+    
+    def save_current_advanced_configuration(self):
+        config = {
+            'input_directory': self.input_path.text(),
+            'output_directory': self.output_path.text(),
+            'thresholds': {
+                'eccentricity': self.ecc_spin.value(),
+                'solidity': self.solidity_spin.value(),
+                'aspect_ratio': self.aspect_ratio_spin.value(),
+                'circularity': self.circularity_spin.value()
+            },
+            'auto_classification': self.auto_threshold_checkbox_class.isChecked(),
+            'batch_processing': self.batch_checkbox_advanced.isChecked(),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        self.advanced_history.append(config)
+        self.save_advanced_history()
+        self.update_advanced_history_list()
+    
+    def load_selected_advanced_history(self):
+        selected_items = self.advanced_history_list.selectedItems()
+        if not selected_items:
+            QMessageBox.warning(self, "Selection Error", "No configuration selected.")
+            return
+        idx = self.advanced_history_list.row(selected_items[0])
+        config = self.advanced_history[idx]
+        self.input_path.setText(config['input_directory'])
+        self.output_path.setText(config['output_directory'])
+        self.ecc_spin.setValue(config['thresholds']['eccentricity'])
+        self.solidity_spin.setValue(config['thresholds']['solidity'])
+        self.aspect_ratio_spin.setValue(config['thresholds']['aspect_ratio'])
+        self.circularity_spin.setValue(config['thresholds']['circularity'])
+        self.auto_threshold_checkbox_class.setChecked(config['auto_classification'])
+        self.batch_checkbox_advanced.setChecked(config['batch_processing'])
+        QMessageBox.information(self, "Advanced Configuration Loaded", "Advanced configuration loaded successfully.")
 
     def load_selected_history(self):
         selected_items = self.history_list.selectedItems()
