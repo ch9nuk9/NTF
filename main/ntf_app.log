@@ -4618,3 +4618,14 @@ RuntimeError: wrapped C/C++ object of type Worker has been deleted
 2024-10-25 18:31:59,498 - INFO - Deleted stationary folder: F:/Demo_Test171024\2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_8
 2024-10-25 18:31:59,499 - INFO - Deleted stationary folder: F:/Demo_Test171024\2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002\2024-08-21_09-46-32_RhodamineB002_track_9
 2024-10-25 18:31:59,499 - INFO - Stationary files deleted successfully.
+2024-10-26 03:48:02,130 - INFO - Batch processing enabled for Advanced Analysis. Output directory is automatically managed.
+2024-10-26 03:48:13,141 - INFO - Batch processing enabled. Output directory is automatically managed at: F:/Output
+2024-10-26 03:48:13,141 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}, 'batch_processing': True}
+2024-10-26 03:48:13,143 - INFO - Classification settings: {'auto_classification': True, 'thresholds': {'eccentricity': 0.8, 'solidity': 0.9, 'aspect_ratio': 1.5, 'circularity': 0.5}, 'batch_processing': True}
+2024-10-26 03:48:13,144 - ERROR - Error in start_classification: ClassificationWorker.__init__() takes 6 positional arguments but 7 were given
+2024-10-26 03:48:13,145 - ERROR - Error in start_classification: ClassificationWorker.__init__() takes 6 positional arguments but 7 were given
+Traceback (most recent call last):
+  File "D:\UWien\NTF\main\ntf_appv2.py", line 1277, in start_classification
+    self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ClassificationWorker.__init__() takes 6 positional arguments but 7 were given
