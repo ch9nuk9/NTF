@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 2024-10-25 14:00:01,632 - INFO - Batch processing enabled. Output directory is automatically managed.
 2024-10-25 14:00:10,225 - ERROR - Error in start_processing: 'NematodeTracksFilter' object has no attribute 'delete_stationary_files'
 2024-10-25 14:00:10,227 - ERROR - Error in start_processing: 'NematodeTracksFilter' object has no attribute 'delete_stationary_files'
@@ -4629,3 +4630,5 @@ Traceback (most recent call last):
     self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run)
                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 TypeError: ClassificationWorker.__init__() takes 6 positional arguments but 7 were given
+=======
+>>>>>>> Stashed changes

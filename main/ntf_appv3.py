@@ -22,6 +22,7 @@ from sklearn.metrics import silhouette_score
 from concurrent.futures import ThreadPoolExecutor
 import cv2  # OpenCV for video and image processing
 from PIL import Image  # <-- Newly added import for handling .tif files
+from PIL import Image
 from threading import Lock
 
 # Print the path where the .ntf_history.json file should be saved
@@ -534,9 +535,10 @@ class ClassificationWorker(QObject):
         self.output_dir = output_dir
         self.thresholds = thresholds
         self.auto_classification = auto_classification
-        self.batch_processing = batch_processing  # Add this line
-        self.dry_run = dry_run  # New attribute for dry run mode
+        self.batch_processing = batch_processing
+        self.dry_run = dry_run  # Ensure dry_run is set
         self.signals = WorkerSignals()
+        self.file_lock = Lock()  # Global lock to prevent concurrent access to files
 
     def run(self):
         try:
@@ -656,17 +658,6 @@ class ClassificationWorker(QObject):
             self.signals.message.emit(f"Results saved to {csv_path}")
         else:
             self.signals.message.emit("No classification results to save.")
-
-    from PIL import Image
-    def __init__(self, input_dir, output_dir, thresholds, auto_classification, batch_processing):
-        super().__init__()
-        self.input_dir = input_dir
-        self.output_dir = output_dir
-        self.thresholds = thresholds
-        self.auto_classification = auto_classification
-        self.batch_processing = batch_processing
-        self.signals = WorkerSignals()
-        self.file_lock = Lock()  # Global lock to prevent concurrent access to files
         
     def process_image_stack(self, tif_path):
         try:
@@ -685,8 +676,13 @@ class ClassificationWorker(QObject):
                     features_list.append(feature)
 
             if features_list:
-                # Average the features
-                avg_features = np.mean(features_list, axis=0)
+                # *** Start Modification ***
+                # Convert features_list to DataFrame
+                features_df = pd.DataFrame(features_list)
+                # Compute average features
+                avg_features = features_df.mean().to_dict()
+                # *** End Modification ***
+            
                 classification = self.classify_object(avg_features)
                 return classification
             else:
@@ -709,15 +705,40 @@ class ClassificationWorker(QObject):
                 # If the image is already grayscale (1 channel), no need to convert
                 gray = frame
                 
-            # Thresholding
+            # Thresholding (invert if worms are darker)
             _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
             # Find contours
             contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             if contours:
                 # Assume the largest contour is the object
                 contour = max(contours, key=cv2.contourArea)
-                features = self.compute_shape_features(contour)
+                # Create a mask for the contour
+                mask = np.zeros_like(gray)
+                cv2.drawContours(mask, [contour], -1, color=255, thickness=-1)
+                
+                # *** Start Modification ***
+                # Compute intensity features
+                pixel_values = gray[mask == 255]
+                mean_intensity = np.mean(pixel_values)
+                std_intensity = np.std(pixel_values)
+                min_intensity = np.min(pixel_values)
+                max_intensity = np.max(pixel_values)
+                # *** End Modification ***
+                
+                # Compute shape features
+                shape_features = self.compute_shape_features(contour)
+
+                # *** Start Modification ***
+                # Combine features into a dictionary
+                features = {
+                    'mean_intensity': mean_intensity,
+                    'std_intensity': std_intensity,
+                    'min_intensity': min_intensity,
+                    'max_intensity': max_intensity,
+                    **shape_features
+                }
                 return features
+                # *** End Modification ***
             else:
                 return None
         except Exception as e:
@@ -731,11 +752,16 @@ class ClassificationWorker(QObject):
         if area == 0:
             return None
         perimeter = cv2.arcLength(contour, True)
-        # Circularity
-        circularity = 4 * np.pi * area / (perimeter ** 2) if perimeter != 0 else 0
+
+        # *** Start Modification ***
+        # Compute additional shape descriptors
+        # Compactness
+        compactness = (perimeter ** 2) / (4 * np.pi * area) if area != 0 else 0
         # Aspect Ratio
         x, y, w, h = cv2.boundingRect(contour)
         aspect_ratio = float(w) / h if h != 0 else 0
+        # Circularity
+        circularity = 4 * np.pi * area / (perimeter ** 2) if perimeter != 0 else 0
         # Solidity
         hull = cv2.convexHull(contour)
         hull_area = cv2.contourArea(hull)
@@ -749,31 +775,87 @@ class ClassificationWorker(QObject):
             eccentricity = np.sqrt(1 - (minoraxis_length / majoraxis_length) ** 2)
         else:
             eccentricity = 0
-        return [eccentricity, solidity, aspect_ratio, circularity]
+        # Compute curvature
+        mean_curvature = self.compute_curvature(contour)
+
+        # Combine features into a dictionary
+        features = {
+            'area': area,
+            'perimeter': perimeter,
+            'compactness': compactness,
+            'aspect_ratio': aspect_ratio,
+            'circularity': circularity,
+            'solidity': solidity,
+            'eccentricity': eccentricity,
+            'mean_curvature': mean_curvature
+        }
+        return features
+        # *** End Modification ***
+        
+    # *** Start Modification ***
+    def compute_curvature(self, contour):
+        curvature = []
+        for i in range(len(contour)):
+            prev_point = contour[i - 1][0]
+            curr_point = contour[i][0]
+            next_point = contour[(i + 1) % len(contour)][0]
+
+            # Vectors
+            vec1 = curr_point - prev_point
+            vec2 = next_point - curr_point
+
+            # Calculate angle between vectors
+            angle = self.angle_between(vec1, vec2)
+            curvature.append(angle)
+        mean_curvature = np.mean(curvature)
+        return mean_curvature
+
+    def angle_between(self, v1, v2):
+        # Calculate angle between two vectors
+        cos_theta = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+        angle = np.arccos(np.clip(cos_theta, -1.0, 1.0))
+        return np.degrees(angle)
+    # *** End Modification ***
 
     def classify_object(self, features):
-        eccentricity, solidity, aspect_ratio, circularity = features
+        # Retrieve feature values
+        mean_intensity = features['mean_intensity']
+        compactness = features['compactness']
+        mean_curvature = features['mean_curvature']
+        # Existing features
+        eccentricity = features['eccentricity']
+        solidity = features['solidity']
+        aspect_ratio = features['aspect_ratio']
+        circularity = features['circularity']
+
         if self.auto_classification:
             # Default thresholds
+            mean_intensity_thresh = 100
+            compactness_thresh = 15
+            mean_curvature_thresh = 30
             ecc_thresh = 0.8
             sol_thresh = 0.9
             ar_thresh = 1.5
             circ_thresh = 0.5
         else:
+            mean_intensity_thresh = self.thresholds['mean_intensity']
+            compactness_thresh = self.thresholds['compactness']
+            mean_curvature_thresh = self.thresholds['mean_curvature']
             ecc_thresh = self.thresholds['eccentricity']
             sol_thresh = self.thresholds['solidity']
             ar_thresh = self.thresholds['aspect_ratio']
             circ_thresh = self.thresholds['circularity']
 
-        # Classification rules
-        if eccentricity > ecc_thresh and solidity < sol_thresh:
+        # *** Start Modification ***
+        # Classification rules incorporating new features
+        if (mean_intensity < mean_intensity_thresh and compactness > compactness_thresh) or \
+        (mean_curvature > mean_curvature_thresh):
             return 'worm'
-        elif aspect_ratio > ar_thresh and circularity < circ_thresh:
-            return 'worm'
-        elif solidity > sol_thresh and abs(aspect_ratio - 1) < 0.1:
+        elif mean_intensity >= mean_intensity_thresh:
             return 'artifact'
         else:
             return 'unknown'
+        # *** End Modification ***
 
     def copy_folder(self, source_folder, classification, output_subdir):
         try:
@@ -1102,7 +1184,7 @@ class NematodeTracksFilter(QMainWindow):
         self.advanced_layout = QVBoxLayout()
 
         # Information Label
-        info_label = QLabel("The functions in this tab use the input and output directories specified in the Configuration tab.")
+        info_label = QLabel("This tab use the input directories specified in the Configuration tab.")
         info_label.setStyleSheet("color: #f0f0f0;")
         info_label.setWordWrap(True)
         self.advanced_layout.addWidget(info_label)
@@ -1155,6 +1237,41 @@ class NematodeTracksFilter(QMainWindow):
         self.circularity_layout.addWidget(self.circularity_spin)
         self.threshold_layout.addLayout(self.circularity_layout)
         
+        # *** Start Modification ***
+        # Mean Intensity Threshold
+        self.mean_intensity_label = QLabel("Mean Intensity Threshold:")
+        self.mean_intensity_spin = QDoubleSpinBox()
+        self.mean_intensity_spin.setRange(0.0, 255.0)
+        self.mean_intensity_spin.setSingleStep(1.0)
+        self.mean_intensity_spin.setValue(100.0)
+        self.mean_intensity_layout = QHBoxLayout()
+        self.mean_intensity_layout.addWidget(self.mean_intensity_label)
+        self.mean_intensity_layout.addWidget(self.mean_intensity_spin)
+        self.threshold_layout.addLayout(self.mean_intensity_layout)
+        
+        # Compactness Threshold
+        self.compactness_label = QLabel("Compactness Threshold:")
+        self.compactness_spin = QDoubleSpinBox()
+        self.compactness_spin.setRange(0.0, 100.0)
+        self.compactness_spin.setSingleStep(0.1)
+        self.compactness_spin.setValue(15.0)
+        self.compactness_layout = QHBoxLayout()
+        self.compactness_layout.addWidget(self.compactness_label)
+        self.compactness_layout.addWidget(self.compactness_spin)
+        self.threshold_layout.addLayout(self.compactness_layout)
+        
+        # Mean Curvature Threshold
+        self.mean_curvature_label = QLabel("Mean Curvature Threshold:")
+        self.mean_curvature_spin = QDoubleSpinBox()
+        self.mean_curvature_spin.setRange(0.0, 360.0)
+        self.mean_curvature_spin.setSingleStep(1.0)
+        self.mean_curvature_spin.setValue(30.0)
+        self.mean_curvature_layout = QHBoxLayout()
+        self.mean_curvature_layout.addWidget(self.mean_curvature_label)
+        self.mean_curvature_layout.addWidget(self.mean_curvature_spin)
+        self.threshold_layout.addLayout(self.mean_curvature_layout)
+        # *** End Modification ***
+        
         # Auto Threshold Checkbox
         self.auto_threshold_checkbox_class = QCheckBox("Use Auto Classification")
         self.auto_threshold_checkbox_class.setChecked(True)
@@ -1167,10 +1284,6 @@ class NematodeTracksFilter(QMainWindow):
         self.batch_checkbox_advanced = QCheckBox("Enable Batch Processing")
         self.batch_checkbox_advanced.setStyleSheet("color: #f0f0f0;")
         self.batch_checkbox_advanced.setChecked(False)  # Default to unchecked
-        self.advanced_layout.addWidget(self.batch_checkbox_advanced)
-        
-        # CONNECTING THE CHECKBOX TO THE METHOD
-        self.batch_checkbox_advanced.stateChanged.connect(self.toggle_output_directory_advanced)  # <-- Connect here!
         self.advanced_layout.addWidget(self.batch_checkbox_advanced)
         
         # Start Classification Button
@@ -1188,7 +1301,6 @@ class NematodeTracksFilter(QMainWindow):
         self.class_log_text.setReadOnly(True)
         self.advanced_layout.addWidget(self.class_log_text)
         
-        # **Newly Added Advanced Analysis History Section**
         # Advanced Analysis History List
         self.advanced_history_list = QListWidget()  # Create list widget to display history
         self.advanced_layout.addWidget(self.advanced_history_list)
@@ -1204,6 +1316,7 @@ class NematodeTracksFilter(QMainWindow):
         self.advanced_layout.addWidget(self.load_advanced_history_button)
 
         self.tab_advanced_analysis.setLayout(self.advanced_layout)
+
         
     # The new method `toggle_output_directory_advanced` here:
     def toggle_output_directory_advanced(self, state):
@@ -1251,6 +1364,9 @@ class NematodeTracksFilter(QMainWindow):
                     raise ValueError("Invalid output directory. Please select a valid directory.")
 
             thresholds = {
+                'mean_intensity': self.mean_intensity_spin.value(),
+                'compactness': self.compactness_spin.value(),
+                'mean_curvature': self.mean_curvature_spin.value(),
                 'eccentricity': self.ecc_spin.value(),
                 'solidity': self.solidity_spin.value(),
                 'aspect_ratio': self.aspect_ratio_spin.value(),
@@ -1554,6 +1670,9 @@ class NematodeTracksFilter(QMainWindow):
             'input_directory': self.input_path.text(),
             'output_directory': self.output_path.text(),
             'thresholds': {
+                'mean_intensity': self.mean_intensity_spin.value(),
+                'compactness': self.compactness_spin.value(),
+                'mean_curvature': self.mean_curvature_spin.value(),
                 'eccentricity': self.ecc_spin.value(),
                 'solidity': self.solidity_spin.value(),
                 'aspect_ratio': self.aspect_ratio_spin.value(),
@@ -1576,6 +1695,9 @@ class NematodeTracksFilter(QMainWindow):
         config = self.advanced_history[idx]
         self.input_path.setText(config['input_directory'])
         self.output_path.setText(config['output_directory'])
+        self.mean_intensity_spin.setValue(config['thresholds']['mean_intensity'])
+        self.compactness_spin.setValue(config['thresholds']['compactness'])
+        self.mean_curvature_spin.setValue(config['thresholds']['mean_curvature'])
         self.ecc_spin.setValue(config['thresholds']['eccentricity'])
         self.solidity_spin.setValue(config['thresholds']['solidity'])
         self.aspect_ratio_spin.setValue(config['thresholds']['aspect_ratio'])

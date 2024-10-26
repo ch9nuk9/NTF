@@ -21,7 +21,62 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from concurrent.futures import ThreadPoolExecutor
 import cv2  # OpenCV for video and image processing
+from PIL import Image  # <-- Newly added import for handling .tif files
+from threading import Lock
 
+# Print the path where the .ntf_history.json file should be saved
+print(os.path.join(os.path.expanduser('~'), '.ntf_history.json'))
+
+# Global exception handler to catch uncaught exceptions
+def handle_global_exception(exc_type, exc_value, exc_traceback):
+    """
+    Global exception handler for uncaught exceptions.
+    Logs and shows the full traceback of the error.
+    """
+    error_message = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    logging.error("Uncaught Exception:", exc_info=(exc_type, exc_value, exc_traceback))
+    
+    # Display a detailed message box
+    QMessageBox.critical(None, "Unhandled Exception", f"An unhandled exception occurred:\n\n{error_message}")
+
+# Set the custom global exception handler
+sys.excepthook = handle_global_exception
+
+# Add the enhanced helper function for batch and single session validation
+def validate_input_directory(input_dir, is_batch_mode):
+    """
+    Validates the input directory for either batch or single session processing.
+    Batch mode expects session directories containing _track_ folders.
+    """
+    if is_batch_mode:
+        # Top-level batch processing: Check if it contains valid session folders
+        session_folders = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
+        if not session_folders:
+            raise ValueError("No session folders found in the top-level directory for batch processing.")
+
+        for session_folder in session_folders:
+            session_path = os.path.join(input_dir, session_folder)
+            
+            # Now go one level deeper to find the _track_ folders
+            subfolders = [os.path.join(session_path, sub) for sub in os.listdir(session_path) 
+                          if os.path.isdir(os.path.join(session_path, sub))]
+            
+            track_folders = []
+            for subfolder in subfolders:
+                track_folders += [d for d in os.listdir(subfolder) if '_track_' in d]
+            
+            if not track_folders:
+                raise ValueError(f"No '_track_' folders found inside the session: {session_path}")
+        
+        return True  # Validation successful
+
+    else:
+        # Single session processing: Look for _track_ folders directly in the input directory
+        track_folders = [d for d in os.listdir(input_dir) if '_track_' in d]
+        if not track_folders:
+            raise ValueError("No '_track_' folders found in the input directory.")
+        return True
+    
 # Configure logging
 logging.basicConfig(
     filename='ntf_app.log',
@@ -29,7 +84,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.DEBUG
 )
-
+  
 # Signal class for multithreading updates
 class WorkerSignals(QObject):
     progress = pyqtSignal(int)
@@ -50,6 +105,7 @@ class Worker(QObject):
         self.signals = WorkerSignals()
         self.total_tracks = 0  # Keep track of the total number of tracks
         self.plot_files = []  # List to store plot file paths
+        self.file_lock = Lock()  # Global lock to prevent concurrent access to files
 
     def run(self):
         try:
@@ -75,48 +131,48 @@ class Worker(QObject):
             self.signals.plot_paths.emit(self.plot_files)  # Send plot paths to GUI
             self.signals.finished.emit()
         except Exception as e:
-            error_message = f"Error in run: {str(e)}"
-            logging.error(error_message, exc_info=True)
-            self.signals.error.emit(error_message)
-            self.signals.finished.emit()
+            # Get full traceback details
+            error_message = ''.join(traceback.format_exception(None, e, e.__traceback__))
+            logging.error("Error in Worker run:", exc_info=True)
+            self.signals.error.emit(error_message)  # Emit detailed error signal to UI
 
     def process_directory(self, parent_dir, output_dir, fps, dir_idx):
         try:
             sd_values = []
             identifiers = []
 
-            # Prepare output subdirectory for this dataset if batch processing
+            # Prepare output subdirectory automatically inside the parent folder for batch processing
             if self.parent.batch_checkbox.isChecked():
-                output_subdir = os.path.join(output_dir, f"dataset_{dir_idx+1}")
+                 # Use the base name of the parent directory for more meaningful folder names
+                output_subdir = os.path.join(parent_dir, "Output")
                 os.makedirs(output_subdir, exist_ok=True)
             else:
-                output_subdir = output_dir
+                output_subdir = output_dir # For single directory processing
 
             # Check if we need to calculate SD
             if self.parent.calculate_sd_checkbox.isChecked():
                 self.signals.message.emit("Calculating SD values...")
-                # Traverse subfolders and calculate SD
-                subfolders = [os.path.join(parent_dir, d) for d in os.listdir(parent_dir)
-                              if os.path.isdir(os.path.join(parent_dir, d))]
-                # Filter subfolders to only include those ending with '_track_*'
-                subfolders = [sf for sf in subfolders if os.path.basename(sf).startswith('_track_') or '_track_' in os.path.basename(sf)]
-
+                # Recursively find subfolders with '_track_' in the name using os.walk
+                subfolders = []
+                for root, dirs, files in os.walk(parent_dir):
+                    subfolders += [os.path.join(root, d) for d in dirs if '_track_' in d]
+                # Log the found subfolders for debugging purposes
+                self.signals.message.emit(f"Found track subfolders: {subfolders}")
+                
+                # Ensure that subfolders were found
                 self.total_tracks = len(subfolders)
                 if self.total_tracks == 0:
-                    self.signals.error.emit("No track folders found ending with '_track_*'.")
-                    return
+                    raise ValueError(f"No track folders found in {parent_dir}.")  # Raise an exception with a clear message
 
                 total_subfolders = len(subfolders)
                 with ThreadPoolExecutor() as executor:
-                    futures = []
-                    for idx, subfolder in enumerate(subfolders):
-                        futures.append(executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders))
+                    futures = [executor.submit(self.calculate_sd, subfolder, identifiers, idx, total_subfolders)
+                           for idx, subfolder in enumerate(subfolders)]
                     for future in futures:
                         future.result()
 
                 if not identifiers:
-                    self.signals.error.emit("No valid SD values calculated. Please check your input data.")
-                    return
+                     raise ValueError("No valid SD values calculated. Please check your input data.")  # Raise another exception
 
                 # Save SD Summary
                 sd_summary_df = pd.DataFrame(identifiers)
@@ -156,20 +212,26 @@ class Worker(QObject):
             if self.parent.compute_metrics_checkbox.isChecked():
                 self.compute_movement_metrics(sd_summary_df, output_subdir, fps)
         except Exception as e:
-            error_message = f"Error in process_directory: {str(e)}"
+            error_message = f"Error in process_directory: {str(e)}" if str(e) else "Unknown error in process_directory."
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
 
+    from threading import Lock
+    file_lock = Lock()  # Global lock to prevent concurrent access to files
+    
     def calculate_sd(self, subfolder, identifiers, idx, total):
         try:
             identifier = os.path.basename(subfolder)
             # Adjusted to match your data structure
             track_file = os.path.join(subfolder, 'track.txt')
-            if not os.path.isfile(track_file):
-                self.signals.message.emit(f"Missing file: {track_file}")
-                return
-            df = pd.read_csv(track_file)
+             # Ensure the file is accessed by only one thread at a time
+            with self.file_lock:  # Using the instance variable file_lock
+                if not os.path.isfile(track_file):
+                    self.signals.message.emit(f"Missing file: {track_file}")
+                    return
+                with open(track_file, 'r') as file:
+                    df = pd.read_csv(track_file)
             # Validate required columns
             if not {'X', 'Y'}.issubset(df.columns):
                 self.signals.message.emit(f"Invalid format in {track_file}")
@@ -182,7 +244,7 @@ class Worker(QObject):
             progress = int((idx / total) * 100)
             self.signals.progress.emit(progress)
         except Exception as e:
-            error_message = f"Error in calculate_sd for {subfolder}: {str(e)}"
+            error_message = f"Error in calculate_sd for {subfolder}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -214,7 +276,7 @@ class Worker(QObject):
             # Visualize clustering
             self.visualize_clusters(sd_summary_df, output_dir)
         except Exception as e:
-            error_message = f"Error in sd_threshold_clustering: {str(e)}"
+            error_message = f"Error in sd_threshold_clustering: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
@@ -234,7 +296,7 @@ class Worker(QObject):
             threshold = sd_sorted[max_increase_idx]
             return threshold
         except Exception as e:
-            error_message = f"Error in auto_threshold: {str(e)}"
+            error_message = f"Error in auto_threshold: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
@@ -283,14 +345,55 @@ class Worker(QObject):
             clustering_csv = os.path.join(output_dir, 'Clustering_Results.csv')
             sd_summary_df.to_csv(clustering_csv, index=False)
             self.signals.message.emit("Clustering Results saved.")
+            logging.info(f"Clustering Results saved at: {clustering_csv}")  # Log the path of Clustering.csv
+            
+            # Print the path to the console for debugging
+            print(f"Clustering Results saved at: {clustering_csv}")
 
             # Visualize clustering
             self.visualize_clusters(sd_summary_df, output_dir)
         except Exception as e:
-            error_message = f"Error in k_means_clustering: {str(e)}"
+            error_message = f"Error in k_means_clustering: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             raise
+        
+    def delete_stationary_files(self, input_dir, output_dir, *args, **kwargs):
+        try:
+            if self.parent.batch_checkbox.isChecked():
+                # Batch mode: Iterate over session folders
+                session_folders = [os.path.join(input_dir, d) for d in os.listdir(input_dir)
+                                if os.path.isdir(os.path.join(input_dir, d))]
+                for session_folder in session_folders:
+                    output_subdir = os.path.join(session_folder, 'Output')
+                    clustering_csv = os.path.join(output_subdir, 'Clustering_Results.csv')
+                    if not os.path.isfile(clustering_csv):
+                        self.signals.message.emit(f"Clustering_Results.csv not found in {output_subdir}. Skipping deletion for this session.")
+                        continue  # Skip to the next session folder
+                    self.perform_deletion(clustering_csv)
+            else:
+                # Single session mode
+                output_subdir = os.path.join(input_dir, 'Output')
+                clustering_csv = os.path.join(output_subdir, 'Clustering_Results.csv')
+                if not os.path.isfile(clustering_csv):
+                    self.signals.message.emit(f"Clustering_Results.csv not found in {output_subdir}. Skipping deletion.")
+                    return  # Exit the function if the file is not found
+                self.perform_deletion(clustering_csv)
+            self.signals.message.emit("Stationary files deleted successfully.")
+        except Exception as e:
+            error_message = f"Error in delete_stationary_files: {str(e) or repr(e)}"
+            logging.error(error_message, exc_info=True)
+            self.signals.error.emit(error_message)
+
+    def perform_deletion(self, clustering_csv):
+        # Load clustering results
+        clustering_df = pd.read_csv(clustering_csv)
+        stationary_paths = clustering_df[clustering_df['Cluster'] == 'Stationary']['Path']
+        # Delete each stationary directory or file
+        for path in stationary_paths:
+            if os.path.exists(path):
+                shutil.rmtree(path)  # Use rmtree to delete directories
+                logging.info(f"Deleted stationary folder: {path}")
 
     def visualize_clusters(self, sd_summary_df, output_dir):
         try:
@@ -312,7 +415,7 @@ class Worker(QObject):
             # Add plot file to the list
             self.plot_files.append(plot_file)
         except Exception as e:
-            error_message = f"Error in visualize_clusters: {str(e)}"
+            error_message = f"Error in visualize_clusters: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -337,7 +440,7 @@ class Worker(QObject):
                     future.result()
             self.signals.message.emit("File classification completed.")
         except Exception as e:
-            error_message = f"Error in classify_files: {str(e)}"
+            error_message = f"Error in classify_files: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -354,7 +457,7 @@ class Worker(QObject):
                 shutil.rmtree(dst)
             shutil.copytree(src, dst)
         except Exception as e:
-            error_message = f"Error copying {src} to {dst}: {str(e)}"
+            error_message = f"Error copying {src} to {dst}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -391,7 +494,7 @@ class Worker(QObject):
                     progress = int((idx / total_tracks) * 100)
                     self.signals.progress.emit(progress)
                 except Exception as e:
-                    error_message = f"Error computing metrics for {track_file}: {str(e)}"
+                    error_message = f"Error computing metrics for {track_file}: {str(e) or repr(e)}"
                     logging.error(error_message, exc_info=True)
                     self.signals.error.emit(error_message)
 
@@ -401,7 +504,7 @@ class Worker(QObject):
             metrics_df.to_csv(metrics_csv, index=False)
             self.signals.message.emit(f"Movement metrics saved at {metrics_csv}")
         except Exception as e:
-            error_message = f"Error in compute_movement_metrics: {str(e)}"
+            error_message = f"Error in compute_movement_metrics: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
 
@@ -425,13 +528,17 @@ class Worker(QObject):
         return path_length
 
 class ClassificationWorker(QObject):
-    def __init__(self, input_dir, output_dir, thresholds, auto_classification):
+    def __init__(self, input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run, delete_files):
         super().__init__()
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.thresholds = thresholds
         self.auto_classification = auto_classification
+        self.batch_processing = batch_processing
+        self.dry_run = dry_run  # Ensure dry_run is set
+        self.delete_files = delete_files  # Store delete_files parameter
         self.signals = WorkerSignals()
+        self.file_lock = Lock()  # Global lock to prevent concurrent access to files
 
     def run(self):
         try:
@@ -444,76 +551,138 @@ class ClassificationWorker(QObject):
             self.signals.message.emit("Classification completed.")
             self.signals.finished.emit()
         except Exception as e:
-            error_message = f"Error during classification: {str(e)}"
+            error_message = f"Error during classification: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             self.signals.finished.emit()
 
     def log_classification_settings(self):
-        if self.auto_classification:
-            thresholds = {
-                'eccentricity': 0.8,
-                'solidity': 0.9,
-                'aspect_ratio': 1.5,
-                'circularity': 0.5
-            }
-        else:
-            thresholds = self.thresholds
-
+        thresholds = self.thresholds if not self.auto_classification else {
+            'eccentricity': 0.8,
+            'solidity': 0.9,
+            'aspect_ratio': 1.5,
+            'circularity': 0.5
+        }
         settings = {
             'auto_classification': self.auto_classification,
-            'thresholds': thresholds
+            'thresholds': thresholds,
+            'delete_files': self.delete_files
         }
         logging.info(f"Classification settings: {settings}")
         self.signals.message.emit(f"Classification settings: {settings}")
 
     def process_directory(self):
-        subfolders = [os.path.join(self.input_dir, d) for d in os.listdir(self.input_dir)
-                      if os.path.isdir(os.path.join(self.input_dir, d))]
-        total_folders = len(subfolders)
-        results = []
+        if self.batch_processing:
+            # Get session folders in the input directory (top-level folders)
+            session_folders = [os.path.join(self.input_dir, d) for d in os.listdir(self.input_dir)
+                            if os.path.isdir(os.path.join(self.input_dir, d))]
 
-        for idx, subfolder in enumerate(subfolders):
-            # Adjusted path to 'track.avi' inside the 'output' subdirectory
-            track_video = os.path.join(subfolder, 'output', 'track.avi')
-            if os.path.isfile(track_video):
-                classification = self.process_video(track_video)
-                if classification:
-                    results.append({'Folder': subfolder, 'Classification': classification})
-                    # Copy the folder to the output directory
-                    self.copy_folder(subfolder, classification)
+            for session_folder in session_folders:
+                results = [] # Initialize results list for this session
+                # Recursive search for all _track_ subfolders inside each session folder
+                subfolders = [os.path.join(root, d) for root, dirs, _ in os.walk(session_folder)
+                            for d in dirs if '_track_' in d]
+                # Ensure subfolders is defined before proceeding
+                if not subfolders:
+                    self.signals.message.emit(f"No '_track_' subfolders found in {session_folder}.")
+                    continue
+                
+                # Create output directory inside each session folder
+                output_subdir = os.path.join(session_folder, "Output")
+                os.makedirs(output_subdir, exist_ok=True)  # Create the Output directory at the correct level
+
+                # Process each _track_ subfolder
+                total_folders = len(subfolders)
+                for idx, subfolder in enumerate(subfolders):
+                    track_tif = os.path.join(subfolder, 'track.tif')
+                    if os.path.isfile(track_tif):
+                        classification = self.process_image_stack(track_tif)  # Process the track.tif file
+                        # Inside process_directory, batch processing section
+                        if classification:
+                            # Copy folder to output directory (inside the session folder)
+                            if not self.dry_run:
+                                self.copy_folder(subfolder, classification, output_subdir)
+                            else:
+                                # In dry run mode, log the intended operation only
+                                self.signals.message.emit(f"[Dry Run] Would classify {subfolder} as '{classification}'")
+
+                            # Append results to the list
+                            results.append({'Folder': subfolder, 'Classification': classification})
+                    else:
+                        self.signals.message.emit(f"track.tif not found in {subfolder}")
+
+                    # Update progress
+                    progress = int(((idx + 1) / total_folders) * 100)
+                    self.signals.progress.emit(progress)
+
+                 # Save results to CSV at the end of each session
+                if results:
+                    results_df = pd.DataFrame(results)
+                    csv_filename = 'classification_dry_run_results.csv' if self.dry_run else 'classification_results.csv'
+                    csv_path = os.path.join(output_subdir, csv_filename)
+                    results_df.to_csv(csv_path, index=False)
+                    self.signals.message.emit(f"Results saved to {csv_path}")
+                else:
+                    self.signals.message.emit(f"No classification results to save for session: {session_folder}")
+        else:
+            # Single directory mode
+            # Initialize results list
+            results = []
+
+            subfolders = [os.path.join(self.input_dir, d) for d in os.listdir(self.input_dir)
+                        if os.path.isdir(os.path.join(self.input_dir, d)) and '_track_' in d]
+
+            if not subfolders:
+                self.signals.message.emit(f"No '_track_' subfolders found in {self.input_dir}.")
+                return
+
+            # Create output directory inside the input directory
+            output_subdir = os.path.join(self.input_dir, "Output")
+            os.makedirs(output_subdir, exist_ok=True)
+
+            total_folders = len(subfolders)
+            for idx, subfolder in enumerate(subfolders):
+                track_tif = os.path.join(subfolder, 'track.tif')
+                if os.path.isfile(track_tif):
+                    classification = self.process_image_stack(track_tif)
+                    if classification:
+                        # Append results to the list
+                        results.append({'Folder': subfolder, 'Classification': classification})
+
+                        # Copy folder to output directory
+                        if not self.dry_run:
+                            self.copy_folder(subfolder, classification, output_subdir)
+                else:
+                    self.signals.message.emit(f"track.tif not found in {subfolder}")
+
+                progress = int(((idx + 1) / total_folders) * 100)
+                self.signals.progress.emit(progress)
+
+            # Save classification results to CSV
+            if results:
+                results_df = pd.DataFrame(results)
+                csv_filename = 'classification_dry_run_results.csv' if self.dry_run else 'classification_results.csv'
+                csv_path = os.path.join(output_subdir, csv_filename)
+                results_df.to_csv(csv_path, index=False)
+                self.signals.message.emit(f"Results saved to {csv_path}")
             else:
-                self.signals.message.emit(f"track.avi not found in {subfolder}")
-            progress = int(((idx + 1) / total_folders) * 100)
-            self.signals.progress.emit(progress)
-
-        # Save results to CSV
-        results_df = pd.DataFrame(results)
-        csv_path = os.path.join(self.output_dir, 'classification_results.csv')
-        results_df.to_csv(csv_path, index=False)
-        self.signals.message.emit(f"Results saved to {csv_path}")
-
-    def process_video(self, video_path):
+                self.signals.message.emit("No classification results to save.")
+        
+    def process_image_stack(self, tif_path):
         try:
-            cap = cv2.VideoCapture(video_path)
-            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            if frame_count == 0:
-                self.signals.message.emit(f"No frames found in {video_path}")
-                cap.release()
-                return None
-            total_frames = min(500, frame_count)
-            frame_indices = np.random.choice(range(frame_count), size=total_frames, replace=False)
-            features_list = []
+            # Ensure the file is accessed by only one thread at a time
+            with self.file_lock:
+                img = Image.open(tif_path)
+                total_frames = img.n_frames  # Number of frames in the stack
+                frame_indices = np.random.choice(range(total_frames), size=min(500, total_frames), replace=False)
+                features_list = []
 
             for idx in frame_indices:
-                cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
-                ret, frame = cap.read()
-                if ret:
-                    feature = self.extract_features(frame)
-                    if feature:
-                        features_list.append(feature)
-
-            cap.release()
+                img.seek(idx)  # Go to the frame at index idx
+                frame = np.array(img)
+                feature = self.extract_features(frame)  # Use the same feature extraction logic
+                if feature:
+                    features_list.append(feature)
 
             if features_list:
                 # Average the features
@@ -521,17 +690,25 @@ class ClassificationWorker(QObject):
                 classification = self.classify_object(avg_features)
                 return classification
             else:
-                self.signals.message.emit(f"No features extracted from {video_path}")
+                self.signals.message.emit(f"No features extracted from {tif_path}")
                 return None
         except Exception as e:
-            error_message = f"Error processing video {video_path}: {str(e)}"
+            error_message = f"Error processing image stack {tif_path}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             return None
 
+
     def extract_features(self, frame):
         try:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Check if the image has multiple channels (e.g., 3 for BGR)
+            if len(frame.shape) == 3 and frame.shape[2] == 3:
+                # Convert BGR to grayscale only if it has 3 channels
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            else:
+                # If the image is already grayscale (1 channel), no need to convert
+                gray = frame
+                
             # Thresholding
             _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
             # Find contours
@@ -544,7 +721,7 @@ class ClassificationWorker(QObject):
             else:
                 return None
         except Exception as e:
-            error_message = f"Error extracting features: {str(e)}"
+            error_message = f"Error extracting features: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
             return None
@@ -598,18 +775,39 @@ class ClassificationWorker(QObject):
         else:
             return 'unknown'
 
-    def copy_folder(self, source_folder, classification):
+    def copy_folder(self, source_folder, classification, output_subdir):
         try:
-            # Copy the entire source_folder
-            dest_folder = os.path.join(self.output_dir, classification, os.path.basename(source_folder))
-            if os.path.exists(dest_folder):
-                shutil.rmtree(dest_folder)
-            shutil.copytree(source_folder, dest_folder)
+            # If delete_files is enabled, skip copying the 'worm' tracks to avoid redundancy
+            if self.delete_files and classification == 'worm':
+                self.signals.message.emit(f"Retaining {source_folder} in input directory as 'worm' without redundant copy to output.")
+                return  # Skip copying `worm` folders if delete_files is True
+            
+            # Determine destination folder based on classification
+            dest_folder = os.path.join(output_subdir, classification, os.path.basename(source_folder))
+            
+            if self.dry_run:
+                # In dry run mode, log the intended operation only
+                if self.delete_files and classification in ['artifact', 'unknown']:
+                    self.signals.message.emit(f"[Dry Run] Would delete {source_folder} classified as '{classification}'")
+                else:
+                    self.signals.message.emit(f"[Dry Run] Would copy {source_folder} to {dest_folder}")
+                return  # Exit without making changes
+
+            if self.delete_files and classification in ['artifact', 'unknown']:
+                # Delete unwanted folders
+                shutil.rmtree(source_folder)
+                self.signals.message.emit(f"Deleted {source_folder} classified as '{classification}'")
+            else:
+                # Copy or move the folder to the output directory
+                if os.path.exists(dest_folder):
+                    shutil.rmtree(dest_folder)
+                shutil.copytree(source_folder, dest_folder)
+                self.signals.message.emit(f"Copied {source_folder} to {dest_folder}")
         except Exception as e:
-            error_message = f"Error copying folder {source_folder}: {str(e)}"
+            error_message = f"Error processing folder {source_folder}: {str(e) or repr(e)}"
             logging.error(error_message, exc_info=True)
             self.signals.error.emit(error_message)
-
+            
 class NematodeTracksFilter(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -656,7 +854,7 @@ class NematodeTracksFilter(QMainWindow):
 
         # Tab 3: Logs and Messages
         self.tab3 = QWidget()
-        self.tabs.addTab(self.tab3, "Logs & Messages")
+        self.tabs.addTab(self.tab3, "Process Logs")
         self.init_tab3()
 
         # New Tab: Advanced Analysis
@@ -747,6 +945,15 @@ class NematodeTracksFilter(QMainWindow):
         self.pipeline_layout.addWidget(self.compute_metrics_checkbox)
         self.pipeline_group.setLayout(self.pipeline_layout)
         self.top_controls_layout.addWidget(self.pipeline_group)
+        
+        # Deletion Checkbox
+        self.delete_stationary_checkbox = QCheckBox("Delete Stationary Files After Processing")
+        self.delete_stationary_checkbox.setStyleSheet("color: #f0f0f0;")
+        self.pipeline_layout.addWidget(self.delete_stationary_checkbox)
+        
+        # Connect the stateChanged signals to check for conflicts
+        self.delete_stationary_checkbox.stateChanged.connect(self.check_for_conflicts)
+        self.classification_checkbox.stateChanged.connect(self.check_for_conflicts)
 
         # Clustering Method Selection
         self.cluster_method_label = QLabel("Clustering Method:")
@@ -793,6 +1000,7 @@ class NematodeTracksFilter(QMainWindow):
         # Batch Processing Option
         self.batch_checkbox = QCheckBox("Enable Batch Processing")
         self.batch_checkbox.setStyleSheet("color: #f0f0f0;")
+        self.batch_checkbox.stateChanged.connect(self.toggle_output_directory)  # Connect checkbox state change to method
         self.top_controls_layout.addWidget(self.batch_checkbox)
 
         # Process Monitoring
@@ -855,7 +1063,37 @@ class NematodeTracksFilter(QMainWindow):
         self.tab1_layout.addWidget(self.splitter)
 
         self.tab1.setLayout(self.tab1_layout)
-
+    
+    def check_for_conflicts(self):
+        if self.delete_stationary_checkbox.isChecked() and self.classification_checkbox.isChecked():
+            QMessageBox.warning(
+                self,
+                "Conflict Detected",
+                'Warning! Conflict Detected:\n\n'
+                'The options "Delete Stationary Files After Processing" and "Classify Files" cannot be used simultaneously. '
+                'Please select only one of these options to avoid conflicts in file handling during processing.'
+            )
+            # Optionally, you can uncheck one of the checkboxes to resolve the conflict
+            # For example:
+            # self.classification_checkbox.setChecked(False)
+        
+    # Add the toggle_output_directory method after init_tab1
+    def toggle_output_directory(self, state):
+        """
+        Toggle the output directory field based on the batch processing checkbox.
+        Disable the output directory field if batch processing is enabled.
+        """
+        if state == Qt.Checked:
+            # Batch processing is enabled, disable the output path field and button
+            self.output_path.setEnabled(False)
+            self.output_button.setEnabled(False)
+            self.log_message("Batch processing enabled. Output directory is automatically managed.")
+        else:
+            # Batch processing is disabled, enable the output path field and button
+            self.output_path.setEnabled(True)
+            self.output_button.setEnabled(True)
+            self.log_message("Single directory processing mode. Please select an output directory.")
+        
     def init_tab2(self):
         self.tab2_layout = QVBoxLayout()
         self.history_label = QLabel("History of Operations:")
@@ -888,6 +1126,7 @@ class NematodeTracksFilter(QMainWindow):
         # Threshold Adjustment Controls
         self.threshold_group = QGroupBox("Threshold Adjustments")
         self.threshold_layout = QVBoxLayout()
+        
         # Eccentricity
         self.ecc_label = QLabel("Eccentricity Threshold:")
         self.ecc_spin = QDoubleSpinBox()
@@ -898,6 +1137,7 @@ class NematodeTracksFilter(QMainWindow):
         self.ecc_layout.addWidget(self.ecc_label)
         self.ecc_layout.addWidget(self.ecc_spin)
         self.threshold_layout.addLayout(self.ecc_layout)
+        
         # Solidity
         self.solidity_label = QLabel("Solidity Threshold:")
         self.solidity_spin = QDoubleSpinBox()
@@ -908,6 +1148,7 @@ class NematodeTracksFilter(QMainWindow):
         self.solidity_layout.addWidget(self.solidity_label)
         self.solidity_layout.addWidget(self.solidity_spin)
         self.threshold_layout.addLayout(self.solidity_layout)
+        
         # Aspect Ratio
         self.aspect_ratio_label = QLabel("Aspect Ratio Threshold:")
         self.aspect_ratio_spin = QDoubleSpinBox()
@@ -918,6 +1159,7 @@ class NematodeTracksFilter(QMainWindow):
         self.aspect_ratio_layout.addWidget(self.aspect_ratio_label)
         self.aspect_ratio_layout.addWidget(self.aspect_ratio_spin)
         self.threshold_layout.addLayout(self.aspect_ratio_layout)
+        
         # Circularity
         self.circularity_label = QLabel("Circularity Threshold:")
         self.circularity_spin = QDoubleSpinBox()
@@ -928,6 +1170,7 @@ class NematodeTracksFilter(QMainWindow):
         self.circularity_layout.addWidget(self.circularity_label)
         self.circularity_layout.addWidget(self.circularity_spin)
         self.threshold_layout.addLayout(self.circularity_layout)
+        
         # Auto Threshold Checkbox
         self.auto_threshold_checkbox_class = QCheckBox("Use Auto Classification")
         self.auto_threshold_checkbox_class.setChecked(True)
@@ -935,7 +1178,17 @@ class NematodeTracksFilter(QMainWindow):
 
         self.threshold_group.setLayout(self.threshold_layout)
         self.advanced_layout.addWidget(self.threshold_group)
-
+        
+        # Batch Processing Checkbox for Advanced Analysis
+        self.batch_checkbox_advanced = QCheckBox("Enable Batch Processing")
+        self.batch_checkbox_advanced.setStyleSheet("color: #f0f0f0;")
+        self.batch_checkbox_advanced.setChecked(False)  # Default to unchecked
+        self.advanced_layout.addWidget(self.batch_checkbox_advanced)
+        
+        # CONNECTING THE CHECKBOX TO THE METHOD
+        self.batch_checkbox_advanced.stateChanged.connect(self.toggle_output_directory_advanced)  # <-- Connect here!
+        self.advanced_layout.addWidget(self.batch_checkbox_advanced)
+        
         # Start Classification Button
         self.classify_button = QPushButton("Start Classification")
         self.classify_button.clicked.connect(self.start_classification)
@@ -943,23 +1196,95 @@ class NematodeTracksFilter(QMainWindow):
 
         # Progress Bar
         self.class_progress_bar = QProgressBar()
+        self.class_progress_bar.setValue(0)  # Set default progress to zero
         self.advanced_layout.addWidget(self.class_progress_bar)
 
         # Log Text
         self.class_log_text = QTextEdit()
         self.class_log_text.setReadOnly(True)
         self.advanced_layout.addWidget(self.class_log_text)
+        
+        # **Newly Added Advanced Analysis History Section**
+        # Advanced Analysis History List
+        self.advanced_history_list = QListWidget()  # Create list widget to display history
+        self.advanced_layout.addWidget(self.advanced_history_list)
+        
+        # Dry Run Checkbox
+        self.dry_run_checkbox = QCheckBox("Dry Run Mode (No file modifications)")
+        self.dry_run_checkbox.setChecked(False)  # Default to unchecked
+        self.advanced_layout.addWidget(self.dry_run_checkbox)
+
+        # Delete Files Checkbox
+        self.delete_files_checkbox = QCheckBox("Delete Unwanted Files After Classification")
+        self.delete_files_checkbox.setChecked(False)
+        self.delete_files_checkbox.setToolTip("If checked, unwanted files classified as 'artifact' or 'unknown' will be permanently deleted from the input directory.")
+        self.advanced_layout.addWidget(self.delete_files_checkbox)
+        
+        # Load Advanced History Button
+        self.load_advanced_history_button = QPushButton("Load Selected Advanced Configuration")
+        self.load_advanced_history_button.clicked.connect(self.load_selected_advanced_history)
+        self.advanced_layout.addWidget(self.load_advanced_history_button)
 
         self.tab_advanced_analysis.setLayout(self.advanced_layout)
-
+        
+    # The new method `toggle_output_directory_advanced` here:
+    def toggle_output_directory_advanced(self, state):
+        """
+        Toggle the output directory field based on the batch processing checkbox in Tab 4.
+        Disable the output directory field if batch processing is enabled.
+        """
+        if state == Qt.Checked:
+            # Batch processing is enabled, disable the output path field and button
+            self.output_path.setEnabled(False)
+            self.output_button.setEnabled(False)
+            self.log_message("Batch processing enabled for Advanced Analysis. Output directory is automatically managed.")
+        else:
+            # Batch processing is disabled, enable the output path field and button
+            self.output_path.setEnabled(True)
+            self.output_button.setEnabled(True)
+            self.log_message("Single directory processing mode for Advanced Analysis. Please select an output directory.")
+            
     def start_classification(self):
         try:
             input_dir = self.input_path.text()
-            output_dir = self.output_path.text()
+            
+            # Determine if batch processing is enabled
+            is_batch_mode = self.batch_checkbox_advanced.isChecked()
+            
+            # Capture the dry run checkbox state
+            dry_run = self.dry_run_checkbox.isChecked()  # Capture checkbox state for dry run
+            
+            # Capture the delete files checkbox state
+            delete_files = self.delete_files_checkbox.isChecked()
+            
+            # INSERT WARNING DIALOG HERE
+            # Show warning dialog if delete_files is enabled
+            if delete_files:
+                reply = QMessageBox.warning(
+                    self,
+                    "Warning!",
+                    "Warning! This action will permanently delete the unwanted files from the input directory based on the classification results. This cannot be undone. Do you want to continue?",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.No:
+                    return  # Abort processing if user selects No
+            
+            # Ensure the input directory exists before validating its structure
             if not os.path.isdir(input_dir):
-                raise ValueError("Invalid input directory.")
-            if not os.path.isdir(output_dir):
-                raise ValueError("Invalid output directory.")
+                raise ValueError("Invalid input directory. Please select a valid directory.")
+            
+            # Validate input directory for batch or single session mode
+            validate_input_directory(input_dir, is_batch_mode)
+
+            # If batch processing is enabled, manage the output directory automatically
+            if is_batch_mode:
+                # Existing code for batch processing output directory
+                output_dir = None  # Or appropriate handling
+            else:
+                output_dir = self.output_path.text()
+                if not os.path.isdir(output_dir):
+                    raise ValueError("Invalid output directory. Please select a valid directory.")
 
             thresholds = {
                 'eccentricity': self.ecc_spin.value(),
@@ -968,11 +1293,14 @@ class NematodeTracksFilter(QMainWindow):
                 'circularity': self.circularity_spin.value()
             }
             auto_classification = self.auto_threshold_checkbox_class.isChecked()
+            batch_processing = self.batch_checkbox_advanced.isChecked()
 
             # Log the classification settings
             settings = {
                 'auto_classification': auto_classification,
-                'thresholds': thresholds
+                'thresholds': thresholds,
+                'batch_processing': batch_processing,
+                'delete_files': delete_files  # Include delete_files in settings
             }
             logging.info(f"Classification settings: {settings}")
             self.log_message(f"Classification settings: {settings}")
@@ -983,7 +1311,7 @@ class NematodeTracksFilter(QMainWindow):
 
             # Create worker and thread
             self.class_thread = QThread()
-            self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification)
+            self.class_worker = ClassificationWorker(input_dir, output_dir, thresholds, auto_classification, batch_processing, dry_run, delete_files)
             self.class_worker.moveToThread(self.class_thread)
 
             # Connect signals
@@ -1001,7 +1329,7 @@ class NematodeTracksFilter(QMainWindow):
             # Re-enable the button when processing is done
             self.class_thread.finished.connect(lambda: self.classify_button.setEnabled(True))
         except Exception as e:
-            error_message = f"Error in start_classification: {str(e)}"
+            error_message = f"Error in start_classification: {str(e) or repr(e)}"
             logging.error(error_message)
             self.log_class_error(error_message)
             QMessageBox.critical(self, "Error", str(e))
@@ -1015,6 +1343,8 @@ class NematodeTracksFilter(QMainWindow):
         logging.info(message)
 
     def log_class_error(self, message):
+        if not message:
+            message = "An unknown error occurred."
         timestamp = datetime.now().strftime('%H:%M:%S')
         self.class_log_text.append(f"[{timestamp}] ERROR: {message}")
         logging.error(message, exc_info=True)
@@ -1055,13 +1385,46 @@ class NematodeTracksFilter(QMainWindow):
 
     def start_processing(self):
         try:
+            # Check for conflicting options
+            if self.delete_stationary_checkbox.isChecked() and self.classification_checkbox.isChecked():
+                QMessageBox.warning(
+                    self,
+                    "Conflict Detected",
+                    'Warning! Conflict Detected:\n\n'
+                    'The options "Delete Stationary Files After Processing" and "Classify Files" cannot be used simultaneously. '
+                    'Please select only one of these options to avoid conflicts in file handling during processing.'
+                )
+                return  # Do not proceed with processing
+            
             # Validate inputs
             input_dir = self.input_path.text()
             output_dir = self.output_path.text()
             fps = float(self.fps_input.text())
+                    
+            # Determine if batch processing is enabled
+            is_batch_mode = self.batch_checkbox.isChecked()
+            
+            # Determine if deletion is enabled
+            delete_stationary = self.delete_stationary_checkbox.isChecked()
+            
+             # Show warning dialog if deletion is enabled
+            if delete_stationary:
+                reply = QMessageBox.critical(
+                    self, "Warning!",
+                    "Warning! This action will permanently delete the stationary objects from the input directory and will clean the input directory to only include mobile worm tracks. Do you want to continue?",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.No:
+                    return  # Abort processing if user selects No
+
+            # Validate input directory for batch or single session
+            validate_input_directory(input_dir, is_batch_mode)
+
+            # Additional validations
             if not os.path.isdir(input_dir):
                 raise ValueError("Invalid input directory.")
-            if not os.path.isdir(output_dir):
+            if not is_batch_mode and not os.path.isdir(output_dir):
                 raise ValueError("Invalid output directory.")
             if fps <= 0:
                 raise ValueError("Frame rate must be positive.")
@@ -1084,19 +1447,33 @@ class NematodeTracksFilter(QMainWindow):
             self.worker.signals.message.connect(self.log_message)
             self.worker.signals.error.connect(self.log_error)
             self.worker.signals.finished.connect(self.thread.quit)
-            self.worker.signals.finished.connect(self.worker.deleteLater)
-            self.thread.finished.connect(self.thread.deleteLater)
+
+            # Update inputs
             self.worker.signals.update_sd_threshold.connect(self.update_sd_threshold_input)
             self.worker.signals.update_k_value.connect(self.update_k_input)
-            self.worker.signals.plot_paths.connect(self.receive_plot_paths)  # New connection
+            self.worker.signals.plot_paths.connect(self.receive_plot_paths)
+            
+            # Add deletion step after clustering or classification
+            if delete_stationary:
+                if self.clustering_checkbox.isChecked():
+                    # Connect the deletion function to the thread's finished signal
+                    self.thread.finished.connect(lambda: self.worker.delete_stationary_files(input_dir, output_dir))
+                else:
+                    self.log_message("Clustering was not performed; skipping deletion of stationary files.")
+            
+            # Connect deleteLater signals after deletion
+            self.worker.signals.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
 
             # Start the thread
             self.thread.start()
 
             # Re-enable the button when processing is done
             self.thread.finished.connect(lambda: self.process_button.setEnabled(True))
+             
         except Exception as e:
-            error_message = f"Error in start_processing: {str(e)}"
+            # Handle exceptions with logging and error message
+            error_message = f"Error in start_processing: {str(e) or repr(e)}"
             logging.error(error_message)
             self.log_error(error_message)
             QMessageBox.critical(self, "Error", str(e))
@@ -1140,10 +1517,13 @@ class NematodeTracksFilter(QMainWindow):
         logging.info(message)
 
     def log_error(self, message):
+        if not message:
+            message = "An unknown error occurred."
         timestamp = datetime.now().strftime('%H:%M:%S')
         self.log_text.append(f"[{timestamp}] ERROR: {message}")
         logging.error(message, exc_info=True)
-        QMessageBox.critical(self, "Error", message)
+        error_details = traceback.format_exc()
+        QMessageBox.critical(self, "Error", f"{message}\n\nDetails:\n{error_details}")
 
     def save_current_configuration(self):
         config = {
@@ -1169,22 +1549,77 @@ class NematodeTracksFilter(QMainWindow):
         self.update_history_list()
 
     def save_history(self):
-        history_file = os.path.join(os.path.expanduser('~'), '.ntf_history.json')
+        history_file = os.path.join(os.getcwd(), '.ntf_history.json')
         with open(history_file, 'w') as f:
             json.dump(self.history, f)
+        print(f"History saved to {history_file}")  # Shows saved history path
+    
+    def save_advanced_history(self):
+        advanced_history_file = os.path.join(os.getcwd(), '.ntf_advanced_history.json')
+        with open(advanced_history_file, 'w') as f:
+            json.dump(self.advanced_history, f)
+        print(f"Advanced Analysis history saved to {advanced_history_file}")
 
     def load_history(self):
-        history_file = os.path.join(os.path.expanduser('~'), '.ntf_history.json')
+        history_file = os.path.join(os.getcwd(), '.ntf_history.json')
         if os.path.isfile(history_file):
             with open(history_file, 'r') as f:
                 self.history = json.load(f)
             self.update_history_list()
-
+        
+        advanced_history_file = os.path.join(os.getcwd(), '.ntf_advanced_history.json')
+        if os.path.isfile(advanced_history_file):
+            with open(advanced_history_file, 'r') as f:
+                self.advanced_history = json.load(f)
+            self.update_advanced_history_list()
+        print("History updated")
+    
     def update_history_list(self):
         self.history_list.clear()
         for idx, config in enumerate(self.history):
             item_text = f"{idx + 1}: {config['timestamp']} - {config['input_directory']}"
             self.history_list.addItem(item_text)
+            
+    def update_advanced_history_list(self):
+        self.advanced_history_list.clear()
+        for idx, config in enumerate(self.advanced_history):
+            item_text = f"{idx + 1}: {config['timestamp']} - {config['input_directory']}"
+            self.advanced_history_list.addItem(item_text)
+    
+    def save_current_advanced_configuration(self):
+        config = {
+            'input_directory': self.input_path.text(),
+            'output_directory': self.output_path.text(),
+            'thresholds': {
+                'eccentricity': self.ecc_spin.value(),
+                'solidity': self.solidity_spin.value(),
+                'aspect_ratio': self.aspect_ratio_spin.value(),
+                'circularity': self.circularity_spin.value()
+            },
+            'auto_classification': self.auto_threshold_checkbox_class.isChecked(),
+            'batch_processing': self.batch_checkbox_advanced.isChecked(),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        self.advanced_history.append(config)
+        self.save_advanced_history()
+        self.update_advanced_history_list()
+    
+    def load_selected_advanced_history(self):
+        selected_items = self.advanced_history_list.selectedItems()
+        if not selected_items:
+            QMessageBox.warning(self, "Selection Error", "No configuration selected.")
+            return
+        idx = self.advanced_history_list.row(selected_items[0])
+        config = self.advanced_history[idx]
+        self.input_path.setText(config['input_directory'])
+        self.output_path.setText(config['output_directory'])
+        self.ecc_spin.setValue(config['thresholds']['eccentricity'])
+        self.solidity_spin.setValue(config['thresholds']['solidity'])
+        self.aspect_ratio_spin.setValue(config['thresholds']['aspect_ratio'])
+        self.circularity_spin.setValue(config['thresholds']['circularity'])
+        self.auto_threshold_checkbox_class.setChecked(config['auto_classification'])
+        self.batch_checkbox_advanced.setChecked(config['batch_processing'])
+        QMessageBox.information(self, "Advanced Configuration Loaded", "Advanced configuration loaded successfully.")
 
     def load_selected_history(self):
         selected_items = self.history_list.selectedItems()
