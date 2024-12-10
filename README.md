@@ -511,7 +511,7 @@ Ensure that the script (run_ntf.sh or run_ntf.bat) has the correct paths.
 
 ## Additional Resources
 - Plotly Documentation: https://plotly.com/python/
-- scikit-learn Documentation: https://scikit-learn.org/stable/
+- Scikit-learn Documentation: https://scikit-learn.org/stable/
 - OpenCV Documentation: https://docs.opencv.org/
 - PyQt5 Documentation: https://www.riverbankcomputing.com/static/Docs/PyQt5/
 
